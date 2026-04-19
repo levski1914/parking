@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: parkbg-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres 
+      POSTGRES_PASSWORD: ferrari11
+      POSTGRES_DB: parkbg
+    ports:
+      - "5432:5432"
+    volumes:
+      - parkbg_pgdata:/var/lib/postgresql/data
+
+volumes:
+  parkbg_pgdata:

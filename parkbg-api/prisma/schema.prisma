@@ -1,0 +1,173 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  OWNER
+  CLIENT
+}
+
+enum OwnerType {
+  MUNICIPALITY
+  PRIVATE
+}
+
+enum ZoneType {
+  BLUE
+  GREEN
+  PINK
+  OTHER
+}
+
+enum ParkingType {
+  PRIVATE
+  MUNICIPAL
+}
+
+enum ParkingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ReportTargetType {
+  ZONE
+  PARKING
+}
+
+enum ReportStatus {
+  OPEN
+  REVIEWED
+  RESOLVED
+  REJECTED
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  phone        String?   @unique
+  passwordHash String
+  firstName    String
+  lastName     String?
+  role         UserRole  @default(CLIENT)
+  ownerType    OwnerType?
+  isVerified   Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  zones        Zone[]
+  parkings     Parking[]
+  reports      Report[]
+
+  @@map("users")
+}
+
+model City {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  zones     Zone[]
+  parkings  Parking[]
+
+  @@map("cities")
+}
+
+model Zone {
+  id               String    @id @default(cuid())
+  cityId           String
+  ownerUserId      String?
+  zoneType         ZoneType
+  name             String
+  polygonGeoJson   Json
+  smsNumber        String?
+  smsTemplate      String?
+  priceText        String
+  maxDurationText  String?
+  workingHoursText String?
+  extraInfo        String?
+  source           String?
+  lastVerifiedAt   DateTime?
+  isActive         Boolean   @default(true)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  city             City      @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  owner            User?     @relation(fields: [ownerUserId], references: [id], onDelete: SetNull)
+  reports          Report[]  @relation("ZoneReports")
+
+  @@index([cityId])
+  @@index([ownerUserId])
+  @@index([zoneType])
+  @@map("zones")
+}
+
+model Parking {
+  id               String         @id @default(cuid())
+  cityId           String
+  ownerUserId      String?
+  parkingType      ParkingType
+  name             String
+  description      String?
+  address          String
+  latitude         Decimal        @db.Decimal(9, 6)
+  longitude        Decimal        @db.Decimal(9, 6)
+  priceText        String
+  approxCapacity   Int?
+  openingHoursText String?
+  phone            String?
+  website          String?
+  amenities        Json?
+  photos           Json?
+  status           ParkingStatus  @default(PENDING)
+  source           String?
+  lastVerifiedAt   DateTime?
+  isActive         Boolean        @default(true)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  city             City           @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  owner            User?          @relation(fields: [ownerUserId], references: [id], onDelete: SetNull)
+  reports          Report[]       @relation("ParkingReports")
+
+  @@index([cityId])
+  @@index([ownerUserId])
+  @@index([parkingType])
+  @@index([status])
+  @@index([latitude, longitude])
+  @@map("parkings")
+}
+
+model Report {
+  id         String           @id @default(cuid())
+  targetType ReportTargetType
+  targetId   String
+  userId     String?
+  reason     String
+  note       String?
+  status     ReportStatus     @default(OPEN)
+  zoneId     String?
+  parkingId  String?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  user       User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  zone       Zone?            @relation("ZoneReports", fields: [zoneId], references: [id], onDelete: Cascade)
+  parking    Parking?         @relation("ParkingReports", fields: [parkingId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([targetType, targetId])
+  @@index([zoneId])
+  @@index([parkingId])
+  @@map("reports")
+}
