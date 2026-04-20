@@ -57,8 +57,11 @@ type VarnaMapProps = {
     east: number;
     west: number;
   }) => void;
+  initialCenter: [number, number];
+  initialZoom?: number;
   focusedParkingId?: string | null;
   selectedItem?: SelectedItem | null;
+  onFocusedParkingHandled?: () => void;
 };
 
 function getZonesGeoJson(zones: Zone[]) {
@@ -141,9 +144,13 @@ export function VarnaMap({
   parkings,
   onSelectItem,
   forceShowParkings = false,
+  initialCenter,
+  initialZoom,
+
   onBoundsChange,
   focusedParkingId,
   selectedItem,
+  onFocusedParkingHandled,
 }: VarnaMapProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -155,8 +162,8 @@ export function VarnaMap({
     const map = new mapboxgl.Map({
       container: ref.current,
       style: "mapbox://styles/mapbox/streets-v12",
-      center: [27.9147, 43.2141],
-      zoom: 13,
+      center: initialCenter,
+      zoom: initialZoom || 13,
     });
 
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
@@ -368,6 +375,19 @@ export function VarnaMap({
     if (parkingsSource) {
       parkingsSource.setData(getParkingsGeoJson(parkings));
     }
+
+    if (map.getLayer("parkings-layer")) {
+      if (forceShowParkings) {
+        map.setLayerZoomRange("parkings-layer", 0, 24);
+      } else {
+        map.setLayerZoomRange("parkings-layer", 14, 24);
+      }
+    }
+  }, [zones, parkings, forceShowParkings]);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !map.isStyleLoaded()) return;
+
     const selectedParkingSource = map.getSource("selected-parking") as
       | mapboxgl.GeoJSONSource
       | undefined;
@@ -377,14 +397,7 @@ export function VarnaMap({
         getSelectedParkingGeoJson(parkings, selectedItem),
       );
     }
-    if (map.getLayer("parkings-layer")) {
-      if (forceShowParkings) {
-        map.setLayerZoomRange("parkings-layer", 0, 24);
-      } else {
-        map.setLayerZoomRange("parkings-layer", 14, 24);
-      }
-    }
-  }, [zones, parkings, forceShowParkings]);
+  }, [parkings, selectedItem]);
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !focusedParkingId) return;
@@ -397,6 +410,8 @@ export function VarnaMap({
       zoom: 16,
       duration: 1200,
     });
-  }, [focusedParkingId, parkings]);
+
+    onFocusedParkingHandled?.();
+  }, [focusedParkingId, parkings, onFocusedParkingHandled]);
   return <div ref={ref} style={{ height: 600, borderRadius: 16 }} />;
 }

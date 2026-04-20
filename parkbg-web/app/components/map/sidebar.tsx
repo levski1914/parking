@@ -1,6 +1,6 @@
 "use client";
 
-import { Parking, SelectedItem } from "./varna-map";
+import { Parking, SelectedItem } from "./ParkingMap";
 
 type SidebarProps = {
   selectedItem: SelectedItem | null;
@@ -14,6 +14,15 @@ type SidebarProps = {
   onClearSelected: () => void;
   visibleParkings: Parking[];
   onSelectParkingFromList: (p: Parking) => void;
+  searchQuery: string;
+  onSearchQueryChange: (value: string) => void;
+  searchResults: Array<{
+    id: string;
+    kind: "parking" | "zone";
+    title: string;
+    subtitle: string;
+  }>;
+  onSearchSelect: (result: { id: string; kind: "parking" | "zone" }) => void;
 };
 
 const zoneTypeLabel: Record<string, string> = {
@@ -36,6 +45,11 @@ export function Sidebar({
   onToggleZones,
   onToggleMunicipal,
   onTogglePrivate,
+  searchQuery,
+  onSearchQueryChange,
+  searchResults,
+  onSearchSelect,
+
   nothingVisible,
   onClearSelected,
   visibleParkings,
@@ -54,10 +68,68 @@ export function Sidebar({
       <div style={{ marginBottom: 18 }}>
         <h2 style={{ margin: 0, fontSize: 30 }}>ParkBG</h2>
         <p style={{ margin: "8px 0 0 0", color: "#475569", lineHeight: 1.5 }}>
-          Паркиране, зони и информация за Варна
+          Паркиране, зони и информация за паркингите в България на една карта.
         </p>
       </div>
+      <div style={{ marginBottom: 18, position: "relative" }}>
+        <div style={{ fontSize: 13, color: "#64748b", marginBottom: 8 }}>
+          Търсене
+        </div>
 
+        <input
+          value={searchQuery}
+          onChange={(e) => onSearchQueryChange(e.target.value)}
+          placeholder="Търси паркинг, адрес или зона..."
+          style={{
+            width: "100%",
+            padding: "12px 14px",
+            borderRadius: 12,
+            border: "1px solid #cbd5e1",
+            outline: "none",
+            fontSize: 14,
+          }}
+        />
+
+        {searchQuery.trim() && (
+          <div
+            style={{
+              marginTop: 8,
+              border: "1px solid #e2e8f0",
+              borderRadius: 12,
+              background: "#fff",
+              overflow: "hidden",
+            }}
+          >
+            {searchResults.length === 0 ? (
+              <div style={{ padding: 12, color: "#64748b", fontSize: 14 }}>
+                Няма резултати
+              </div>
+            ) : (
+              searchResults.map((result) => (
+                <button
+                  key={`${result.kind}-${result.id}`}
+                  onClick={() => onSearchSelect(result)}
+                  style={{
+                    width: "100%",
+                    textAlign: "left",
+                    padding: 12,
+                    border: "none",
+                    borderBottom: "1px solid #f1f5f9",
+                    background: "#fff",
+                    cursor: "pointer",
+                  }}
+                >
+                  <div style={{ fontWeight: 600 }}>{result.title}</div>
+                  <div style={{ fontSize: 13, color: "#64748b", marginTop: 4 }}>
+                    {result.kind === "parking" ? "Паркинг" : "Зона"} •{" "}
+                    {result.subtitle}
+                  </div>
+                </button>
+              ))
+            )}
+          </div>
+        )}
+      </div>
       <div style={{ marginBottom: 18 }}>
         <div style={{ fontSize: 13, color: "#64748b", marginBottom: 8 }}>
           Слоеве

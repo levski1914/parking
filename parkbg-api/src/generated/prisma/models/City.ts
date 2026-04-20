@@ -20,8 +20,22 @@ export type CityModel = runtime.Types.Result.DefaultSelection<Prisma.$CityPayloa
 
 export type AggregateCity = {
   _count: CityCountAggregateOutputType | null
+  _avg: CityAvgAggregateOutputType | null
+  _sum: CitySumAggregateOutputType | null
   _min: CityMinAggregateOutputType | null
   _max: CityMaxAggregateOutputType | null
+}
+
+export type CityAvgAggregateOutputType = {
+  centerLat: number | null
+  centerLng: number | null
+  defaultZoom: number | null
+}
+
+export type CitySumAggregateOutputType = {
+  centerLat: number | null
+  centerLng: number | null
+  defaultZoom: number | null
 }
 
 export type CityMinAggregateOutputType = {
@@ -31,6 +45,9 @@ export type CityMinAggregateOutputType = {
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  centerLat: number | null
+  centerLng: number | null
+  defaultZoom: number | null
 }
 
 export type CityMaxAggregateOutputType = {
@@ -40,6 +57,9 @@ export type CityMaxAggregateOutputType = {
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  centerLat: number | null
+  centerLng: number | null
+  defaultZoom: number | null
 }
 
 export type CityCountAggregateOutputType = {
@@ -49,9 +69,24 @@ export type CityCountAggregateOutputType = {
   isActive: number
   createdAt: number
   updatedAt: number
+  centerLat: number
+  centerLng: number
+  defaultZoom: number
   _all: number
 }
 
+
+export type CityAvgAggregateInputType = {
+  centerLat?: true
+  centerLng?: true
+  defaultZoom?: true
+}
+
+export type CitySumAggregateInputType = {
+  centerLat?: true
+  centerLng?: true
+  defaultZoom?: true
+}
 
 export type CityMinAggregateInputType = {
   id?: true
@@ -60,6 +95,9 @@ export type CityMinAggregateInputType = {
   isActive?: true
   createdAt?: true
   updatedAt?: true
+  centerLat?: true
+  centerLng?: true
+  defaultZoom?: true
 }
 
 export type CityMaxAggregateInputType = {
@@ -69,6 +107,9 @@ export type CityMaxAggregateInputType = {
   isActive?: true
   createdAt?: true
   updatedAt?: true
+  centerLat?: true
+  centerLng?: true
+  defaultZoom?: true
 }
 
 export type CityCountAggregateInputType = {
@@ -78,6 +119,9 @@ export type CityCountAggregateInputType = {
   isActive?: true
   createdAt?: true
   updatedAt?: true
+  centerLat?: true
+  centerLng?: true
+  defaultZoom?: true
   _all?: true
 }
 
@@ -119,6 +163,18 @@ export type CityAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: CityAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: CitySumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: CityMinAggregateInputType
@@ -149,6 +205,8 @@ export type CityGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: CityCountAggregateInputType | true
+  _avg?: CityAvgAggregateInputType
+  _sum?: CitySumAggregateInputType
   _min?: CityMinAggregateInputType
   _max?: CityMaxAggregateInputType
 }
@@ -160,7 +218,12 @@ export type CityGroupByOutputType = {
   isActive: boolean
   createdAt: Date
   updatedAt: Date
+  centerLat: number
+  centerLng: number
+  defaultZoom: number
   _count: CityCountAggregateOutputType | null
+  _avg: CityAvgAggregateOutputType | null
+  _sum: CitySumAggregateOutputType | null
   _min: CityMinAggregateOutputType | null
   _max: CityMaxAggregateOutputType | null
 }
@@ -190,6 +253,9 @@ export type CityWhereInput = {
   isActive?: Prisma.BoolFilter<"City"> | boolean
   createdAt?: Prisma.DateTimeFilter<"City"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"City"> | Date | string
+  centerLat?: Prisma.FloatFilter<"City"> | number
+  centerLng?: Prisma.FloatFilter<"City"> | number
+  defaultZoom?: Prisma.FloatFilter<"City"> | number
   zones?: Prisma.ZoneListRelationFilter
   parkings?: Prisma.ParkingListRelationFilter
 }
@@ -201,6 +267,9 @@ export type CityOrderByWithRelationInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  centerLat?: Prisma.SortOrder
+  centerLng?: Prisma.SortOrder
+  defaultZoom?: Prisma.SortOrder
   zones?: Prisma.ZoneOrderByRelationAggregateInput
   parkings?: Prisma.ParkingOrderByRelationAggregateInput
 }
@@ -215,6 +284,9 @@ export type CityWhereUniqueInput = Prisma.AtLeast<{
   isActive?: Prisma.BoolFilter<"City"> | boolean
   createdAt?: Prisma.DateTimeFilter<"City"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"City"> | Date | string
+  centerLat?: Prisma.FloatFilter<"City"> | number
+  centerLng?: Prisma.FloatFilter<"City"> | number
+  defaultZoom?: Prisma.FloatFilter<"City"> | number
   zones?: Prisma.ZoneListRelationFilter
   parkings?: Prisma.ParkingListRelationFilter
 }, "id" | "name" | "slug">
@@ -226,9 +298,14 @@ export type CityOrderByWithAggregationInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  centerLat?: Prisma.SortOrder
+  centerLng?: Prisma.SortOrder
+  defaultZoom?: Prisma.SortOrder
   _count?: Prisma.CityCountOrderByAggregateInput
+  _avg?: Prisma.CityAvgOrderByAggregateInput
   _max?: Prisma.CityMaxOrderByAggregateInput
   _min?: Prisma.CityMinOrderByAggregateInput
+  _sum?: Prisma.CitySumOrderByAggregateInput
 }
 
 export type CityScalarWhereWithAggregatesInput = {
@@ -241,6 +318,9 @@ export type CityScalarWhereWithAggregatesInput = {
   isActive?: Prisma.BoolWithAggregatesFilter<"City"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"City"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"City"> | Date | string
+  centerLat?: Prisma.FloatWithAggregatesFilter<"City"> | number
+  centerLng?: Prisma.FloatWithAggregatesFilter<"City"> | number
+  defaultZoom?: Prisma.FloatWithAggregatesFilter<"City"> | number
 }
 
 export type CityCreateInput = {
@@ -250,6 +330,9 @@ export type CityCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  centerLat: number
+  centerLng: number
+  defaultZoom?: number
   zones?: Prisma.ZoneCreateNestedManyWithoutCityInput
   parkings?: Prisma.ParkingCreateNestedManyWithoutCityInput
 }
@@ -261,6 +344,9 @@ export type CityUncheckedCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  centerLat: number
+  centerLng: number
+  defaultZoom?: number
   zones?: Prisma.ZoneUncheckedCreateNestedManyWithoutCityInput
   parkings?: Prisma.ParkingUncheckedCreateNestedManyWithoutCityInput
 }
@@ -272,6 +358,9 @@ export type CityUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  centerLat?: Prisma.FloatFieldUpdateOperationsInput | number
+  centerLng?: Prisma.FloatFieldUpdateOperationsInput | number
+  defaultZoom?: Prisma.FloatFieldUpdateOperationsInput | number
   zones?: Prisma.ZoneUpdateManyWithoutCityNestedInput
   parkings?: Prisma.ParkingUpdateManyWithoutCityNestedInput
 }
@@ -283,6 +372,9 @@ export type CityUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  centerLat?: Prisma.FloatFieldUpdateOperationsInput | number
+  centerLng?: Prisma.FloatFieldUpdateOperationsInput | number
+  defaultZoom?: Prisma.FloatFieldUpdateOperationsInput | number
   zones?: Prisma.ZoneUncheckedUpdateManyWithoutCityNestedInput
   parkings?: Prisma.ParkingUncheckedUpdateManyWithoutCityNestedInput
 }
@@ -294,6 +386,9 @@ export type CityCreateManyInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  centerLat: number
+  centerLng: number
+  defaultZoom?: number
 }
 
 export type CityUpdateManyMutationInput = {
@@ -303,6 +398,9 @@ export type CityUpdateManyMutationInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  centerLat?: Prisma.FloatFieldUpdateOperationsInput | number
+  centerLng?: Prisma.FloatFieldUpdateOperationsInput | number
+  defaultZoom?: Prisma.FloatFieldUpdateOperationsInput | number
 }
 
 export type CityUncheckedUpdateManyInput = {
@@ -312,6 +410,9 @@ export type CityUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  centerLat?: Prisma.FloatFieldUpdateOperationsInput | number
+  centerLng?: Prisma.FloatFieldUpdateOperationsInput | number
+  defaultZoom?: Prisma.FloatFieldUpdateOperationsInput | number
 }
 
 export type CityCountOrderByAggregateInput = {
@@ -321,6 +422,15 @@ export type CityCountOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  centerLat?: Prisma.SortOrder
+  centerLng?: Prisma.SortOrder
+  defaultZoom?: Prisma.SortOrder
+}
+
+export type CityAvgOrderByAggregateInput = {
+  centerLat?: Prisma.SortOrder
+  centerLng?: Prisma.SortOrder
+  defaultZoom?: Prisma.SortOrder
 }
 
 export type CityMaxOrderByAggregateInput = {
@@ -330,6 +440,9 @@ export type CityMaxOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  centerLat?: Prisma.SortOrder
+  centerLng?: Prisma.SortOrder
+  defaultZoom?: Prisma.SortOrder
 }
 
 export type CityMinOrderByAggregateInput = {
@@ -339,11 +452,28 @@ export type CityMinOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  centerLat?: Prisma.SortOrder
+  centerLng?: Prisma.SortOrder
+  defaultZoom?: Prisma.SortOrder
+}
+
+export type CitySumOrderByAggregateInput = {
+  centerLat?: Prisma.SortOrder
+  centerLng?: Prisma.SortOrder
+  defaultZoom?: Prisma.SortOrder
 }
 
 export type CityScalarRelationFilter = {
   is?: Prisma.CityWhereInput
   isNot?: Prisma.CityWhereInput
+}
+
+export type FloatFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type CityCreateNestedOneWithoutZonesInput = {
@@ -381,6 +511,9 @@ export type CityCreateWithoutZonesInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  centerLat: number
+  centerLng: number
+  defaultZoom?: number
   parkings?: Prisma.ParkingCreateNestedManyWithoutCityInput
 }
 
@@ -391,6 +524,9 @@ export type CityUncheckedCreateWithoutZonesInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  centerLat: number
+  centerLng: number
+  defaultZoom?: number
   parkings?: Prisma.ParkingUncheckedCreateNestedManyWithoutCityInput
 }
 
@@ -417,6 +553,9 @@ export type CityUpdateWithoutZonesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  centerLat?: Prisma.FloatFieldUpdateOperationsInput | number
+  centerLng?: Prisma.FloatFieldUpdateOperationsInput | number
+  defaultZoom?: Prisma.FloatFieldUpdateOperationsInput | number
   parkings?: Prisma.ParkingUpdateManyWithoutCityNestedInput
 }
 
@@ -427,6 +566,9 @@ export type CityUncheckedUpdateWithoutZonesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  centerLat?: Prisma.FloatFieldUpdateOperationsInput | number
+  centerLng?: Prisma.FloatFieldUpdateOperationsInput | number
+  defaultZoom?: Prisma.FloatFieldUpdateOperationsInput | number
   parkings?: Prisma.ParkingUncheckedUpdateManyWithoutCityNestedInput
 }
 
@@ -437,6 +579,9 @@ export type CityCreateWithoutParkingsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  centerLat: number
+  centerLng: number
+  defaultZoom?: number
   zones?: Prisma.ZoneCreateNestedManyWithoutCityInput
 }
 
@@ -447,6 +592,9 @@ export type CityUncheckedCreateWithoutParkingsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  centerLat: number
+  centerLng: number
+  defaultZoom?: number
   zones?: Prisma.ZoneUncheckedCreateNestedManyWithoutCityInput
 }
 
@@ -473,6 +621,9 @@ export type CityUpdateWithoutParkingsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  centerLat?: Prisma.FloatFieldUpdateOperationsInput | number
+  centerLng?: Prisma.FloatFieldUpdateOperationsInput | number
+  defaultZoom?: Prisma.FloatFieldUpdateOperationsInput | number
   zones?: Prisma.ZoneUpdateManyWithoutCityNestedInput
 }
 
@@ -483,6 +634,9 @@ export type CityUncheckedUpdateWithoutParkingsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  centerLat?: Prisma.FloatFieldUpdateOperationsInput | number
+  centerLng?: Prisma.FloatFieldUpdateOperationsInput | number
+  defaultZoom?: Prisma.FloatFieldUpdateOperationsInput | number
   zones?: Prisma.ZoneUncheckedUpdateManyWithoutCityNestedInput
 }
 
@@ -533,6 +687,9 @@ export type CitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  centerLat?: boolean
+  centerLng?: boolean
+  defaultZoom?: boolean
   zones?: boolean | Prisma.City$zonesArgs<ExtArgs>
   parkings?: boolean | Prisma.City$parkingsArgs<ExtArgs>
   _count?: boolean | Prisma.CityCountOutputTypeDefaultArgs<ExtArgs>
@@ -545,6 +702,9 @@ export type CitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  centerLat?: boolean
+  centerLng?: boolean
+  defaultZoom?: boolean
 }, ExtArgs["result"]["city"]>
 
 export type CitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -554,6 +714,9 @@ export type CitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  centerLat?: boolean
+  centerLng?: boolean
+  defaultZoom?: boolean
 }, ExtArgs["result"]["city"]>
 
 export type CitySelectScalar = {
@@ -563,9 +726,12 @@ export type CitySelectScalar = {
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  centerLat?: boolean
+  centerLng?: boolean
+  defaultZoom?: boolean
 }
 
-export type CityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["city"]>
+export type CityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "isActive" | "createdAt" | "updatedAt" | "centerLat" | "centerLng" | "defaultZoom", ExtArgs["result"]["city"]>
 export type CityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zones?: boolean | Prisma.City$zonesArgs<ExtArgs>
   parkings?: boolean | Prisma.City$parkingsArgs<ExtArgs>
@@ -587,6 +753,9 @@ export type $CityPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     isActive: boolean
     createdAt: Date
     updatedAt: Date
+    centerLat: number
+    centerLng: number
+    defaultZoom: number
   }, ExtArgs["result"]["city"]>
   composites: {}
 }
@@ -1018,6 +1187,9 @@ export interface CityFieldRefs {
   readonly isActive: Prisma.FieldRef<"City", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"City", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"City", 'DateTime'>
+  readonly centerLat: Prisma.FieldRef<"City", 'Float'>
+  readonly centerLng: Prisma.FieldRef<"City", 'Float'>
+  readonly defaultZoom: Prisma.FieldRef<"City", 'Float'>
 }
     
 

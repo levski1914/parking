@@ -50,35 +50,37 @@ enum ReportStatus {
 }
 
 model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
-  phone        String?   @unique
+  id           String     @id @default(cuid())
+  email        String     @unique
+  phone        String?    @unique
   passwordHash String
   firstName    String
   lastName     String?
-  role         UserRole  @default(CLIENT)
+  role         UserRole   @default(CLIENT)
   ownerType    OwnerType?
-  isVerified   Boolean   @default(false)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  isVerified   Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 
-  zones        Zone[]
-  parkings     Parking[]
-  reports      Report[]
+  zones    Zone[]
+  parkings Parking[]
+  reports  Report[]
 
   @@map("users")
 }
 
 model City {
-  id        String    @id @default(cuid())
-  name      String    @unique
-  slug      String    @unique
-  isActive  Boolean   @default(true)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  zones     Zone[]
-  parkings  Parking[]
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  centerLat   Float
+  centerLng   Float
+  defaultZoom Float     @default(13)
+  zones       Zone[]
+  parkings    Parking[]
 
   @@map("cities")
 }
@@ -102,9 +104,9 @@ model Zone {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  city             City      @relation(fields: [cityId], references: [id], onDelete: Cascade)
-  owner            User?     @relation(fields: [ownerUserId], references: [id], onDelete: SetNull)
-  reports          Report[]  @relation("ZoneReports")
+  city    City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  owner   User?    @relation(fields: [ownerUserId], references: [id], onDelete: SetNull)
+  reports Report[] @relation("ZoneReports")
 
   @@index([cityId])
   @@index([ownerUserId])
@@ -113,15 +115,15 @@ model Zone {
 }
 
 model Parking {
-  id               String         @id @default(cuid())
+  id               String        @id @default(cuid())
   cityId           String
   ownerUserId      String?
   parkingType      ParkingType
   name             String
   description      String?
   address          String
-  latitude         Decimal        @db.Decimal(9, 6)
-  longitude        Decimal        @db.Decimal(9, 6)
+  latitude         Decimal       @db.Decimal(9, 6)
+  longitude        Decimal       @db.Decimal(9, 6)
   priceText        String
   approxCapacity   Int?
   openingHoursText String?
@@ -129,16 +131,16 @@ model Parking {
   website          String?
   amenities        Json?
   photos           Json?
-  status           ParkingStatus  @default(PENDING)
+  status           ParkingStatus @default(PENDING)
   source           String?
   lastVerifiedAt   DateTime?
-  isActive         Boolean        @default(true)
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  isActive         Boolean       @default(true)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
 
-  city             City           @relation(fields: [cityId], references: [id], onDelete: Cascade)
-  owner            User?          @relation(fields: [ownerUserId], references: [id], onDelete: SetNull)
-  reports          Report[]       @relation("ParkingReports")
+  city    City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  owner   User?    @relation(fields: [ownerUserId], references: [id], onDelete: SetNull)
+  reports Report[] @relation("ParkingReports")
 
   @@index([cityId])
   @@index([ownerUserId])
@@ -161,9 +163,9 @@ model Report {
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
 
-  user       User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
-  zone       Zone?            @relation("ZoneReports", fields: [zoneId], references: [id], onDelete: Cascade)
-  parking    Parking?         @relation("ParkingReports", fields: [parkingId], references: [id], onDelete: Cascade)
+  user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  zone    Zone?    @relation("ZoneReports", fields: [zoneId], references: [id], onDelete: Cascade)
+  parking Parking? @relation("ParkingReports", fields: [parkingId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([targetType, targetId])

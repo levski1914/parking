@@ -21,6 +21,8 @@ async function main() {
       data: {
         name: 'Varna',
         slug: 'varna',
+        centerLat: 43.2141,
+        centerLng: 27.9147,
       },
     }));
 
@@ -46,8 +48,8 @@ async function main() {
         address: 'ул. „Морска градина“ 5',
         latitude: 43.218,
         longitude: 27.9115,
-        priceText: '1.00 лв/час',
-        approxCapacity: 100,
+        priceText: '2.00 лв/час',
+        approxCapacity: 30,
         status: 'APPROVED',
       },
     ],

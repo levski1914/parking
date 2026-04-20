@@ -97,7 +97,10 @@ export const CityScalarFieldEnum = {
   slug: 'slug',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  centerLat: 'centerLat',
+  centerLng: 'centerLng',
+  defaultZoom: 'defaultZoom'
 } as const
 
 export type CityScalarFieldEnum = (typeof CityScalarFieldEnum)[keyof typeof CityScalarFieldEnum]

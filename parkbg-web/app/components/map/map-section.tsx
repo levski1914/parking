@@ -1,6 +1,6 @@
 "use client";
 
-import { Parking, SelectedItem, VarnaMap, Zone } from "./varna-map";
+import { Parking, SelectedItem, VarnaMap, Zone } from "./ParkingMap";
 
 type Bounds = {
   north: number;
@@ -10,22 +10,35 @@ type Bounds = {
 };
 
 type MapSectionProps = {
+  city: {
+    id: string;
+    name: string;
+    slug: string;
+    centerLat: number;
+    centerLng: number;
+    defaultZoom: number;
+  };
   zones: Zone[];
   parkings: Parking[];
   selectedItem: SelectedItem | null;
   setSelectedItem: (item: SelectedItem | null) => void;
   forceShowParkings: boolean;
   onBoundsChange: (bounds: Bounds) => void;
+  onFocusedParkingHandled: () => void;
   focusedParkingId: string | null;
+  focusedZoneId: string | null;
+  onFocusedZoneHandled: () => void;
 };
 
 export function MapSection({
+  city,
   zones,
   parkings,
   selectedItem,
   setSelectedItem,
   forceShowParkings,
   onBoundsChange,
+  onFocusedParkingHandled,
   focusedParkingId,
 }: MapSectionProps) {
   return (
@@ -46,6 +59,9 @@ export function MapSection({
         onBoundsChange={onBoundsChange}
         focusedParkingId={focusedParkingId}
         selectedItem={selectedItem}
+        initialCenter={[city.centerLng, city.centerLat]}
+        initialZoom={city.defaultZoom}
+        onFocusedParkingHandled={onFocusedParkingHandled}
       />
     </div>
   );
