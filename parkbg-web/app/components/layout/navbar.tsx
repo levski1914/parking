@@ -70,17 +70,20 @@ export function Navbar({ citySlug }: NavbarProps) {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <button
+          <Link
+            href="/add-parking"
             style={{
               padding: "10px 14px",
               borderRadius: 10,
               border: "1px solid #cbd5e1",
               background: "#fff",
               cursor: "pointer",
+              textDecoration: "none",
+              color: "#0f172a",
             }}
           >
             Добави паркинг
-          </button>
+          </Link>
 
           <button
             style={{
