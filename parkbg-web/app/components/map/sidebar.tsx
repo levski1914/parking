@@ -37,7 +37,7 @@ interface SidebarProps {
   cheapestNearby: Parking[];
   onSearchSelect: (result: SearchResultSelection) => void;
   availabilityNow: AvailabilityParking[];
-};
+}
 
 const zoneTypeLabel: Record<string, string> = {
   BLUE: "Синя зона",
