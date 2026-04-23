@@ -37,4 +37,8 @@ export class ParkingsController {
   ) {
     return this.service.updateStatus(id, status);
   }
+  @Patch(':id')
+  updateParking(@Param('id') id: string, @Body() body: any) {
+    return this.service.updateParking(id, body);
+  }
 }

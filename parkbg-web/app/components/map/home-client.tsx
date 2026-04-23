@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MapSection } from "@/app/components/map/map-section";
 import { Sidebar } from "@/app/components/map/sidebar";
 import { Parking, SelectedItem, Zone } from "@/app/components/map/ParkingMap";
@@ -24,6 +24,30 @@ type Bounds = {
   east: number;
   west: number;
 };
+type CheapestParking = Parking & {
+  distance: number;
+  numericPrice: number;
+};
+function distanceInKm(lat1: number, lng1: number, lat2: number, lng2: number) {
+  const R = 6371;
+
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+function extractPrice(priceText: string) {
+  const match = priceText.match(/[\d.]+/);
+  return match ? Number(match[0]) : Infinity;
+}
 
 export function HomeClient({ city, zones, parkings }: HomeClientProps) {
   const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null);
@@ -31,9 +55,11 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
   const [showMunicipal, setShowMunicipal] = useState(true);
   const [showPrivate, setShowPrivate] = useState(false);
   const [touchedParking, setTouchedParking] = useState(false);
+  const [radiusKm, setRadiusKm] = useState(2);
   const [bounds, setBounds] = useState<Bounds | null>(null);
   const [focusedParkingId, setFocusedParkingId] = useState<string | null>(null);
   const mapRef = useRef<any>(null);
+  const [cheapestNearby, setCheapestNearby] = useState<CheapestParking[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [focusedZoneId, setFocusedZoneId] = useState<string | null>(null);
   const filteredZones = useMemo(() => {
@@ -52,7 +78,35 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
 
     setFocusedParkingId(p.id);
   };
+  function getAvailabilityLabel(capacity?: number | null) {
+    if (!capacity || capacity <= 20) return "Ограничени места";
+    if (capacity <= 80) return "Вероятно има места";
+    return "По-голям шанс за свободни места";
+  }
 
+  function findCheapestNearby() {
+    if (!bounds) return;
+
+    const centerLat = (bounds.north + bounds.south) / 2;
+    const centerLng = (bounds.east + bounds.west) / 2;
+
+    const nearby = filteredParkings
+      .map((p) => ({
+        ...p,
+        distance: distanceInKm(
+          centerLat,
+          centerLng,
+          Number(p.latitude),
+          Number(p.longitude),
+        ),
+        numericPrice: extractPrice(p.priceText),
+      }))
+      .filter((p) => p.distance <= radiusKm)
+      .sort((a, b) => a.numericPrice - b.numericPrice)
+      .slice(0, 3);
+
+    setCheapestNearby(nearby);
+  }
   const searchResults = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
 
@@ -134,7 +188,10 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
       return false;
     });
   }, [parkings, showMunicipal, showPrivate]);
-
+  useEffect(() => {
+    if (!bounds) return;
+    findCheapestNearby();
+  }, [bounds, filteredParkings, radiusKm]);
   const nothingVisible = !showZones && !showMunicipal && !showPrivate;
   const forceShowParkings = touchedParking && (showMunicipal || showPrivate);
   function isInsideBounds(p: Parking, b: Bounds) {
@@ -149,7 +206,12 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
 
     return filteredParkings.filter((p) => isInsideBounds(p, bounds));
   }, [filteredParkings, bounds]);
-
+  const availabilityNow = useMemo(() => {
+    return visibleParkings.slice(0, 4).map((p) => ({
+      ...p,
+      availabilityLabel: getAvailabilityLabel(p.approxCapacity),
+    }));
+  }, [visibleParkings]);
   return (
     <>
       <Navbar citySlug={city.slug} />
@@ -175,6 +237,9 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
               searchResults={searchResults}
               onSearchSelect={handleSearchSelect}
               onToggleZones={() => setShowZones((v) => !v)}
+              onFindCheapestNearby={findCheapestNearby}
+              cheapestNearby={cheapestNearby}
+              availabilityNow={availabilityNow}
               visibleParkings={visibleParkings}
               onSelectParkingFromList={handleSelectParking}
               onToggleMunicipal={() => {
@@ -187,20 +252,145 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
               }}
               onClearSelected={() => setSelectedItem(null)}
             />
+            <div>
+              <MapSection
+                city={city}
+                zones={filteredZones}
+                parkings={filteredParkings}
+                onFocusedParkingHandled={() => setFocusedParkingId(null)}
+                onBoundsChange={setBounds}
+                selectedItem={selectedItem}
+                setSelectedItem={setSelectedItem}
+                forceShowParkings={forceShowParkings}
+                focusedParkingId={focusedParkingId}
+                focusedZoneId={focusedZoneId}
+                onFocusedZoneHandled={() => setFocusedZoneId(null)}
+              />
+              <div
+                style={{
+                  marginBottom: 12,
+                  background: "#fff",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 16,
+                  padding: 14,
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 12,
+                    marginBottom: 12,
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        fontSize: 20,
+                        fontWeight: 700,
+                        color: "#0f172a",
+                      }}
+                    >
+                      Най-евтини наблизо
+                    </div>
+                    <div style={{ fontSize: 14, color: "#64748b" }}>
+                      Спрямо текущия изглед на картата
+                    </div>
+                  </div>
 
-            <MapSection
-              city={city}
-              zones={filteredZones}
-              parkings={filteredParkings}
-              onFocusedParkingHandled={() => setFocusedParkingId(null)}
-              onBoundsChange={setBounds}
-              selectedItem={selectedItem}
-              setSelectedItem={setSelectedItem}
-              forceShowParkings={forceShowParkings}
-              focusedParkingId={focusedParkingId}
-              focusedZoneId={focusedZoneId}
-              onFocusedZoneHandled={() => setFocusedZoneId(null)}
-            />
+                  <select
+                    value={radiusKm}
+                    onChange={(e) => setRadiusKm(Number(e.target.value))}
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: 10,
+                      border: "1px solid #cbd5e1",
+                      background: "#fff",
+                    }}
+                  >
+                    <option value={1}>В радиус 1 км</option>
+                    <option value={2}>В радиус 2 км</option>
+                    <option value={5}>В радиус 5 км</option>
+                  </select>
+                </div>
+
+                {cheapestNearby.length === 0 ? (
+                  <div style={{ color: "#64748b", fontSize: 14 }}>
+                    Няма намерени паркинги в избрания радиус.
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns:
+                        "repeat(auto-fit, minmax(220px, 1fr))",
+                      gap: 10,
+                    }}
+                  >
+                    {cheapestNearby.map((p, index) => (
+                      <div
+                        key={p.id}
+                        onClick={() => handleSelectParking(p)}
+                        style={{
+                          padding: 12,
+                          borderRadius: 12,
+                          background: "#fff",
+                          border: "1px solid #e2e8f0",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <div style={{ marginBottom: 6 }}>
+                          {index === 0 && (
+                            <span style={{ color: "#16a34a", fontSize: 12 }}>
+                              Най-евтин
+                            </span>
+                          )}
+                          {index === 1 && (
+                            <span style={{ color: "#2563eb", fontSize: 12 }}>
+                              Близо
+                            </span>
+                          )}
+                          {index === 2 && (
+                            <span style={{ color: "#f59e0b", fontSize: 12 }}>
+                              Добър избор
+                            </span>
+                          )}
+                        </div>
+
+                        <div style={{ fontWeight: 700, lineHeight: 1.4 }}>
+                          {p.name}
+                        </div>
+
+                        <div
+                          style={{
+                            fontSize: 14,
+                            color: "#0f172a",
+                            marginTop: 6,
+                          }}
+                        >
+                          {p.priceText}
+                        </div>
+
+                        <div
+                          style={{
+                            fontSize: 13,
+                            color: "#64748b",
+                            marginTop: 4,
+                          }}
+                        >
+                          {p.distance.toFixed(1)} км •{" "}
+                          {p.parkingType === "MUNICIPAL"
+                            ? "Общински"
+                            : "Частен"}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </main>

@@ -53,4 +53,10 @@ export class ParkingsService {
       data: { status },
     });
   }
+  async updateParking(id: string, data: any) {
+    return this.prisma.client.parking.update({
+      where: { id },
+      data,
+    });
+  }
 }

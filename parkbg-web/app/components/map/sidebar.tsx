@@ -2,7 +2,23 @@
 
 import { Parking, SelectedItem } from "./ParkingMap";
 
-type SidebarProps = {
+interface SearchResult {
+  id: string;
+  kind: "parking" | "zone";
+  title: string;
+  subtitle: string;
+}
+
+interface SearchResultSelection {
+  id: string;
+  kind: SearchResult["kind"];
+}
+
+interface AvailabilityParking extends Parking {
+  availabilityLabel: string;
+}
+
+interface SidebarProps {
   selectedItem: SelectedItem | null;
   showZones: boolean;
   showMunicipal: boolean;
@@ -16,13 +32,11 @@ type SidebarProps = {
   onSelectParkingFromList: (p: Parking) => void;
   searchQuery: string;
   onSearchQueryChange: (value: string) => void;
-  searchResults: Array<{
-    id: string;
-    kind: "parking" | "zone";
-    title: string;
-    subtitle: string;
-  }>;
-  onSearchSelect: (result: { id: string; kind: "parking" | "zone" }) => void;
+  searchResults: SearchResult[];
+  onFindCheapestNearby: () => void;
+  cheapestNearby: Parking[];
+  onSearchSelect: (result: SearchResultSelection) => void;
+  availabilityNow: AvailabilityParking[];
 };
 
 const zoneTypeLabel: Record<string, string> = {
@@ -49,7 +63,9 @@ export function Sidebar({
   onSearchQueryChange,
   searchResults,
   onSearchSelect,
-
+  availabilityNow,
+  cheapestNearby,
+  onFindCheapestNearby,
   nothingVisible,
   onClearSelected,
   visibleParkings,
@@ -432,7 +448,53 @@ export function Sidebar({
           </div>
         )}
       </div>
+      <div
+        style={{
+          padding: 14,
+          borderRadius: 12,
+          background: "#fff",
+          border: "1px solid #e2e8f0",
+          marginBottom: 18,
+        }}
+      >
+        <div style={{ fontSize: 13, color: "#64748b", marginBottom: 10 }}>
+          Свободни места сега
+        </div>
 
+        {availabilityNow.length === 0 ? (
+          <p style={{ color: "#64748b", margin: 0 }}>
+            Няма достатъчно данни за текущия изглед.
+          </p>
+        ) : (
+          <div style={{ display: "grid", gap: 10 }}>
+            {availabilityNow.map((p) => (
+              <div
+                key={`availability-${p.id}`}
+                onClick={() => onSelectParkingFromList(p)}
+                style={{
+                  padding: 12,
+                  borderRadius: 10,
+                  border: "1px solid #e2e8f0",
+                  cursor: "pointer",
+                  background: "#fff",
+                }}
+              >
+                <div style={{ fontWeight: 600, lineHeight: 1.4 }}>{p.name}</div>
+
+                <div style={{ fontSize: 13, color: "#64748b", marginTop: 4 }}>
+                  {p.availabilityLabel}
+                </div>
+
+                <div style={{ fontSize: 13, marginTop: 4 }}>
+                  {p.approxCapacity
+                    ? `Капацитет: ~${p.approxCapacity}`
+                    : "Няма подаден капацитет"}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
       <div
         style={{
           padding: 14,
