@@ -41,6 +41,7 @@ export type ZoneMinAggregateOutputType = {
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  organizationId: string | null
 }
 
 export type ZoneMaxAggregateOutputType = {
@@ -60,6 +61,7 @@ export type ZoneMaxAggregateOutputType = {
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  organizationId: string | null
 }
 
 export type ZoneCountAggregateOutputType = {
@@ -80,6 +82,7 @@ export type ZoneCountAggregateOutputType = {
   isActive: number
   createdAt: number
   updatedAt: number
+  organizationId: number
   _all: number
 }
 
@@ -101,6 +104,7 @@ export type ZoneMinAggregateInputType = {
   isActive?: true
   createdAt?: true
   updatedAt?: true
+  organizationId?: true
 }
 
 export type ZoneMaxAggregateInputType = {
@@ -120,6 +124,7 @@ export type ZoneMaxAggregateInputType = {
   isActive?: true
   createdAt?: true
   updatedAt?: true
+  organizationId?: true
 }
 
 export type ZoneCountAggregateInputType = {
@@ -140,6 +145,7 @@ export type ZoneCountAggregateInputType = {
   isActive?: true
   createdAt?: true
   updatedAt?: true
+  organizationId?: true
   _all?: true
 }
 
@@ -233,6 +239,7 @@ export type ZoneGroupByOutputType = {
   isActive: boolean
   createdAt: Date
   updatedAt: Date
+  organizationId: string | null
   _count: ZoneCountAggregateOutputType | null
   _min: ZoneMinAggregateOutputType | null
   _max: ZoneMaxAggregateOutputType | null
@@ -274,9 +281,11 @@ export type ZoneWhereInput = {
   isActive?: Prisma.BoolFilter<"Zone"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Zone"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Zone"> | Date | string
+  organizationId?: Prisma.StringNullableFilter<"Zone"> | string | null
   city?: Prisma.XOR<Prisma.CityScalarRelationFilter, Prisma.CityWhereInput>
   owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   reports?: Prisma.ReportListRelationFilter
+  organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
 }
 
 export type ZoneOrderByWithRelationInput = {
@@ -297,9 +306,11 @@ export type ZoneOrderByWithRelationInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   city?: Prisma.CityOrderByWithRelationInput
   owner?: Prisma.UserOrderByWithRelationInput
   reports?: Prisma.ReportOrderByRelationAggregateInput
+  organization?: Prisma.OrganizationOrderByWithRelationInput
 }
 
 export type ZoneWhereUniqueInput = Prisma.AtLeast<{
@@ -323,9 +334,11 @@ export type ZoneWhereUniqueInput = Prisma.AtLeast<{
   isActive?: Prisma.BoolFilter<"Zone"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Zone"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Zone"> | Date | string
+  organizationId?: Prisma.StringNullableFilter<"Zone"> | string | null
   city?: Prisma.XOR<Prisma.CityScalarRelationFilter, Prisma.CityWhereInput>
   owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   reports?: Prisma.ReportListRelationFilter
+  organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
 }, "id">
 
 export type ZoneOrderByWithAggregationInput = {
@@ -346,6 +359,7 @@ export type ZoneOrderByWithAggregationInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ZoneCountOrderByAggregateInput
   _max?: Prisma.ZoneMaxOrderByAggregateInput
   _min?: Prisma.ZoneMinOrderByAggregateInput
@@ -372,6 +386,7 @@ export type ZoneScalarWhereWithAggregatesInput = {
   isActive?: Prisma.BoolWithAggregatesFilter<"Zone"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Zone"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Zone"> | Date | string
+  organizationId?: Prisma.StringNullableWithAggregatesFilter<"Zone"> | string | null
 }
 
 export type ZoneCreateInput = {
@@ -393,6 +408,7 @@ export type ZoneCreateInput = {
   city: Prisma.CityCreateNestedOneWithoutZonesInput
   owner?: Prisma.UserCreateNestedOneWithoutZonesInput
   reports?: Prisma.ReportCreateNestedManyWithoutZoneInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutZonesInput
 }
 
 export type ZoneUncheckedCreateInput = {
@@ -413,6 +429,7 @@ export type ZoneUncheckedCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  organizationId?: string | null
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutZoneInput
 }
 
@@ -435,6 +452,7 @@ export type ZoneUpdateInput = {
   city?: Prisma.CityUpdateOneRequiredWithoutZonesNestedInput
   owner?: Prisma.UserUpdateOneWithoutZonesNestedInput
   reports?: Prisma.ReportUpdateManyWithoutZoneNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutZonesNestedInput
 }
 
 export type ZoneUncheckedUpdateInput = {
@@ -455,6 +473,7 @@ export type ZoneUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.ReportUncheckedUpdateManyWithoutZoneNestedInput
 }
 
@@ -476,6 +495,7 @@ export type ZoneCreateManyInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  organizationId?: string | null
 }
 
 export type ZoneUpdateManyMutationInput = {
@@ -514,6 +534,7 @@ export type ZoneUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ZoneListRelationFilter = {
@@ -544,6 +565,7 @@ export type ZoneCountOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrder
 }
 
 export type ZoneMaxOrderByAggregateInput = {
@@ -563,6 +585,7 @@ export type ZoneMaxOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrder
 }
 
 export type ZoneMinOrderByAggregateInput = {
@@ -582,6 +605,7 @@ export type ZoneMinOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrder
 }
 
 export type ZoneNullableScalarRelationFilter = {
@@ -628,6 +652,48 @@ export type ZoneUncheckedUpdateManyWithoutOwnerNestedInput = {
   connect?: Prisma.ZoneWhereUniqueInput | Prisma.ZoneWhereUniqueInput[]
   update?: Prisma.ZoneUpdateWithWhereUniqueWithoutOwnerInput | Prisma.ZoneUpdateWithWhereUniqueWithoutOwnerInput[]
   updateMany?: Prisma.ZoneUpdateManyWithWhereWithoutOwnerInput | Prisma.ZoneUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.ZoneScalarWhereInput | Prisma.ZoneScalarWhereInput[]
+}
+
+export type ZoneCreateNestedManyWithoutOrganizationInput = {
+  create?: Prisma.XOR<Prisma.ZoneCreateWithoutOrganizationInput, Prisma.ZoneUncheckedCreateWithoutOrganizationInput> | Prisma.ZoneCreateWithoutOrganizationInput[] | Prisma.ZoneUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.ZoneCreateOrConnectWithoutOrganizationInput | Prisma.ZoneCreateOrConnectWithoutOrganizationInput[]
+  createMany?: Prisma.ZoneCreateManyOrganizationInputEnvelope
+  connect?: Prisma.ZoneWhereUniqueInput | Prisma.ZoneWhereUniqueInput[]
+}
+
+export type ZoneUncheckedCreateNestedManyWithoutOrganizationInput = {
+  create?: Prisma.XOR<Prisma.ZoneCreateWithoutOrganizationInput, Prisma.ZoneUncheckedCreateWithoutOrganizationInput> | Prisma.ZoneCreateWithoutOrganizationInput[] | Prisma.ZoneUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.ZoneCreateOrConnectWithoutOrganizationInput | Prisma.ZoneCreateOrConnectWithoutOrganizationInput[]
+  createMany?: Prisma.ZoneCreateManyOrganizationInputEnvelope
+  connect?: Prisma.ZoneWhereUniqueInput | Prisma.ZoneWhereUniqueInput[]
+}
+
+export type ZoneUpdateManyWithoutOrganizationNestedInput = {
+  create?: Prisma.XOR<Prisma.ZoneCreateWithoutOrganizationInput, Prisma.ZoneUncheckedCreateWithoutOrganizationInput> | Prisma.ZoneCreateWithoutOrganizationInput[] | Prisma.ZoneUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.ZoneCreateOrConnectWithoutOrganizationInput | Prisma.ZoneCreateOrConnectWithoutOrganizationInput[]
+  upsert?: Prisma.ZoneUpsertWithWhereUniqueWithoutOrganizationInput | Prisma.ZoneUpsertWithWhereUniqueWithoutOrganizationInput[]
+  createMany?: Prisma.ZoneCreateManyOrganizationInputEnvelope
+  set?: Prisma.ZoneWhereUniqueInput | Prisma.ZoneWhereUniqueInput[]
+  disconnect?: Prisma.ZoneWhereUniqueInput | Prisma.ZoneWhereUniqueInput[]
+  delete?: Prisma.ZoneWhereUniqueInput | Prisma.ZoneWhereUniqueInput[]
+  connect?: Prisma.ZoneWhereUniqueInput | Prisma.ZoneWhereUniqueInput[]
+  update?: Prisma.ZoneUpdateWithWhereUniqueWithoutOrganizationInput | Prisma.ZoneUpdateWithWhereUniqueWithoutOrganizationInput[]
+  updateMany?: Prisma.ZoneUpdateManyWithWhereWithoutOrganizationInput | Prisma.ZoneUpdateManyWithWhereWithoutOrganizationInput[]
+  deleteMany?: Prisma.ZoneScalarWhereInput | Prisma.ZoneScalarWhereInput[]
+}
+
+export type ZoneUncheckedUpdateManyWithoutOrganizationNestedInput = {
+  create?: Prisma.XOR<Prisma.ZoneCreateWithoutOrganizationInput, Prisma.ZoneUncheckedCreateWithoutOrganizationInput> | Prisma.ZoneCreateWithoutOrganizationInput[] | Prisma.ZoneUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.ZoneCreateOrConnectWithoutOrganizationInput | Prisma.ZoneCreateOrConnectWithoutOrganizationInput[]
+  upsert?: Prisma.ZoneUpsertWithWhereUniqueWithoutOrganizationInput | Prisma.ZoneUpsertWithWhereUniqueWithoutOrganizationInput[]
+  createMany?: Prisma.ZoneCreateManyOrganizationInputEnvelope
+  set?: Prisma.ZoneWhereUniqueInput | Prisma.ZoneWhereUniqueInput[]
+  disconnect?: Prisma.ZoneWhereUniqueInput | Prisma.ZoneWhereUniqueInput[]
+  delete?: Prisma.ZoneWhereUniqueInput | Prisma.ZoneWhereUniqueInput[]
+  connect?: Prisma.ZoneWhereUniqueInput | Prisma.ZoneWhereUniqueInput[]
+  update?: Prisma.ZoneUpdateWithWhereUniqueWithoutOrganizationInput | Prisma.ZoneUpdateWithWhereUniqueWithoutOrganizationInput[]
+  updateMany?: Prisma.ZoneUpdateManyWithWhereWithoutOrganizationInput | Prisma.ZoneUpdateManyWithWhereWithoutOrganizationInput[]
   deleteMany?: Prisma.ZoneScalarWhereInput | Prisma.ZoneScalarWhereInput[]
 }
 
@@ -715,6 +781,7 @@ export type ZoneCreateWithoutOwnerInput = {
   updatedAt?: Date | string
   city: Prisma.CityCreateNestedOneWithoutZonesInput
   reports?: Prisma.ReportCreateNestedManyWithoutZoneInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutZonesInput
 }
 
 export type ZoneUncheckedCreateWithoutOwnerInput = {
@@ -734,6 +801,7 @@ export type ZoneUncheckedCreateWithoutOwnerInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  organizationId?: string | null
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutZoneInput
 }
 
@@ -784,6 +852,75 @@ export type ZoneScalarWhereInput = {
   isActive?: Prisma.BoolFilter<"Zone"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Zone"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Zone"> | Date | string
+  organizationId?: Prisma.StringNullableFilter<"Zone"> | string | null
+}
+
+export type ZoneCreateWithoutOrganizationInput = {
+  id?: string
+  zoneType: $Enums.ZoneType
+  name: string
+  polygonGeoJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  smsNumber?: string | null
+  smsTemplate?: string | null
+  priceText: string
+  maxDurationText?: string | null
+  workingHoursText?: string | null
+  extraInfo?: string | null
+  source?: string | null
+  lastVerifiedAt?: Date | string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  city: Prisma.CityCreateNestedOneWithoutZonesInput
+  owner?: Prisma.UserCreateNestedOneWithoutZonesInput
+  reports?: Prisma.ReportCreateNestedManyWithoutZoneInput
+}
+
+export type ZoneUncheckedCreateWithoutOrganizationInput = {
+  id?: string
+  cityId: string
+  ownerUserId?: string | null
+  zoneType: $Enums.ZoneType
+  name: string
+  polygonGeoJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  smsNumber?: string | null
+  smsTemplate?: string | null
+  priceText: string
+  maxDurationText?: string | null
+  workingHoursText?: string | null
+  extraInfo?: string | null
+  source?: string | null
+  lastVerifiedAt?: Date | string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutZoneInput
+}
+
+export type ZoneCreateOrConnectWithoutOrganizationInput = {
+  where: Prisma.ZoneWhereUniqueInput
+  create: Prisma.XOR<Prisma.ZoneCreateWithoutOrganizationInput, Prisma.ZoneUncheckedCreateWithoutOrganizationInput>
+}
+
+export type ZoneCreateManyOrganizationInputEnvelope = {
+  data: Prisma.ZoneCreateManyOrganizationInput | Prisma.ZoneCreateManyOrganizationInput[]
+  skipDuplicates?: boolean
+}
+
+export type ZoneUpsertWithWhereUniqueWithoutOrganizationInput = {
+  where: Prisma.ZoneWhereUniqueInput
+  update: Prisma.XOR<Prisma.ZoneUpdateWithoutOrganizationInput, Prisma.ZoneUncheckedUpdateWithoutOrganizationInput>
+  create: Prisma.XOR<Prisma.ZoneCreateWithoutOrganizationInput, Prisma.ZoneUncheckedCreateWithoutOrganizationInput>
+}
+
+export type ZoneUpdateWithWhereUniqueWithoutOrganizationInput = {
+  where: Prisma.ZoneWhereUniqueInput
+  data: Prisma.XOR<Prisma.ZoneUpdateWithoutOrganizationInput, Prisma.ZoneUncheckedUpdateWithoutOrganizationInput>
+}
+
+export type ZoneUpdateManyWithWhereWithoutOrganizationInput = {
+  where: Prisma.ZoneScalarWhereInput
+  data: Prisma.XOR<Prisma.ZoneUpdateManyMutationInput, Prisma.ZoneUncheckedUpdateManyWithoutOrganizationInput>
 }
 
 export type ZoneCreateWithoutCityInput = {
@@ -804,6 +941,7 @@ export type ZoneCreateWithoutCityInput = {
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutZonesInput
   reports?: Prisma.ReportCreateNestedManyWithoutZoneInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutZonesInput
 }
 
 export type ZoneUncheckedCreateWithoutCityInput = {
@@ -823,6 +961,7 @@ export type ZoneUncheckedCreateWithoutCityInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  organizationId?: string | null
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutZoneInput
 }
 
@@ -870,6 +1009,7 @@ export type ZoneCreateWithoutReportsInput = {
   updatedAt?: Date | string
   city: Prisma.CityCreateNestedOneWithoutZonesInput
   owner?: Prisma.UserCreateNestedOneWithoutZonesInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutZonesInput
 }
 
 export type ZoneUncheckedCreateWithoutReportsInput = {
@@ -890,6 +1030,7 @@ export type ZoneUncheckedCreateWithoutReportsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  organizationId?: string | null
 }
 
 export type ZoneCreateOrConnectWithoutReportsInput = {
@@ -926,6 +1067,7 @@ export type ZoneUpdateWithoutReportsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   city?: Prisma.CityUpdateOneRequiredWithoutZonesNestedInput
   owner?: Prisma.UserUpdateOneWithoutZonesNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutZonesNestedInput
 }
 
 export type ZoneUncheckedUpdateWithoutReportsInput = {
@@ -946,6 +1088,7 @@ export type ZoneUncheckedUpdateWithoutReportsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ZoneCreateManyOwnerInput = {
@@ -965,6 +1108,7 @@ export type ZoneCreateManyOwnerInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  organizationId?: string | null
 }
 
 export type ZoneUpdateWithoutOwnerInput = {
@@ -985,6 +1129,7 @@ export type ZoneUpdateWithoutOwnerInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   city?: Prisma.CityUpdateOneRequiredWithoutZonesNestedInput
   reports?: Prisma.ReportUpdateManyWithoutZoneNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutZonesNestedInput
 }
 
 export type ZoneUncheckedUpdateWithoutOwnerInput = {
@@ -1004,12 +1149,96 @@ export type ZoneUncheckedUpdateWithoutOwnerInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.ReportUncheckedUpdateManyWithoutZoneNestedInput
 }
 
 export type ZoneUncheckedUpdateManyWithoutOwnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
+  zoneType?: Prisma.EnumZoneTypeFieldUpdateOperationsInput | $Enums.ZoneType
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  polygonGeoJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  smsNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  smsTemplate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  priceText?: Prisma.StringFieldUpdateOperationsInput | string
+  maxDurationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workingHoursText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  extraInfo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ZoneCreateManyOrganizationInput = {
+  id?: string
+  cityId: string
+  ownerUserId?: string | null
+  zoneType: $Enums.ZoneType
+  name: string
+  polygonGeoJson: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  smsNumber?: string | null
+  smsTemplate?: string | null
+  priceText: string
+  maxDurationText?: string | null
+  workingHoursText?: string | null
+  extraInfo?: string | null
+  source?: string | null
+  lastVerifiedAt?: Date | string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ZoneUpdateWithoutOrganizationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  zoneType?: Prisma.EnumZoneTypeFieldUpdateOperationsInput | $Enums.ZoneType
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  polygonGeoJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  smsNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  smsTemplate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  priceText?: Prisma.StringFieldUpdateOperationsInput | string
+  maxDurationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workingHoursText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  extraInfo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  city?: Prisma.CityUpdateOneRequiredWithoutZonesNestedInput
+  owner?: Prisma.UserUpdateOneWithoutZonesNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutZoneNestedInput
+}
+
+export type ZoneUncheckedUpdateWithoutOrganizationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  cityId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zoneType?: Prisma.EnumZoneTypeFieldUpdateOperationsInput | $Enums.ZoneType
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  polygonGeoJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  smsNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  smsTemplate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  priceText?: Prisma.StringFieldUpdateOperationsInput | string
+  maxDurationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workingHoursText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  extraInfo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutZoneNestedInput
+}
+
+export type ZoneUncheckedUpdateManyWithoutOrganizationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  cityId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zoneType?: Prisma.EnumZoneTypeFieldUpdateOperationsInput | $Enums.ZoneType
   name?: Prisma.StringFieldUpdateOperationsInput | string
   polygonGeoJson?: Prisma.JsonNullValueInput | runtime.InputJsonValue
@@ -1043,6 +1272,7 @@ export type ZoneCreateManyCityInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  organizationId?: string | null
 }
 
 export type ZoneUpdateWithoutCityInput = {
@@ -1063,6 +1293,7 @@ export type ZoneUpdateWithoutCityInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutZonesNestedInput
   reports?: Prisma.ReportUpdateManyWithoutZoneNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutZonesNestedInput
 }
 
 export type ZoneUncheckedUpdateWithoutCityInput = {
@@ -1082,6 +1313,7 @@ export type ZoneUncheckedUpdateWithoutCityInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reports?: Prisma.ReportUncheckedUpdateManyWithoutZoneNestedInput
 }
 
@@ -1102,6 +1334,7 @@ export type ZoneUncheckedUpdateManyWithoutCityInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1153,9 +1386,11 @@ export type ZoneSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  organizationId?: boolean
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.Zone$ownerArgs<ExtArgs>
   reports?: boolean | Prisma.Zone$reportsArgs<ExtArgs>
+  organization?: boolean | Prisma.Zone$organizationArgs<ExtArgs>
   _count?: boolean | Prisma.ZoneCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["zone"]>
 
@@ -1177,8 +1412,10 @@ export type ZoneSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  organizationId?: boolean
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.Zone$ownerArgs<ExtArgs>
+  organization?: boolean | Prisma.Zone$organizationArgs<ExtArgs>
 }, ExtArgs["result"]["zone"]>
 
 export type ZoneSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1199,8 +1436,10 @@ export type ZoneSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  organizationId?: boolean
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.Zone$ownerArgs<ExtArgs>
+  organization?: boolean | Prisma.Zone$organizationArgs<ExtArgs>
 }, ExtArgs["result"]["zone"]>
 
 export type ZoneSelectScalar = {
@@ -1221,22 +1460,26 @@ export type ZoneSelectScalar = {
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  organizationId?: boolean
 }
 
-export type ZoneOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cityId" | "ownerUserId" | "zoneType" | "name" | "polygonGeoJson" | "smsNumber" | "smsTemplate" | "priceText" | "maxDurationText" | "workingHoursText" | "extraInfo" | "source" | "lastVerifiedAt" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["zone"]>
+export type ZoneOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cityId" | "ownerUserId" | "zoneType" | "name" | "polygonGeoJson" | "smsNumber" | "smsTemplate" | "priceText" | "maxDurationText" | "workingHoursText" | "extraInfo" | "source" | "lastVerifiedAt" | "isActive" | "createdAt" | "updatedAt" | "organizationId", ExtArgs["result"]["zone"]>
 export type ZoneInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.Zone$ownerArgs<ExtArgs>
   reports?: boolean | Prisma.Zone$reportsArgs<ExtArgs>
+  organization?: boolean | Prisma.Zone$organizationArgs<ExtArgs>
   _count?: boolean | Prisma.ZoneCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ZoneIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.Zone$ownerArgs<ExtArgs>
+  organization?: boolean | Prisma.Zone$organizationArgs<ExtArgs>
 }
 export type ZoneIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   owner?: boolean | Prisma.Zone$ownerArgs<ExtArgs>
+  organization?: boolean | Prisma.Zone$organizationArgs<ExtArgs>
 }
 
 export type $ZonePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1245,6 +1488,7 @@ export type $ZonePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     city: Prisma.$CityPayload<ExtArgs>
     owner: Prisma.$UserPayload<ExtArgs> | null
     reports: Prisma.$ReportPayload<ExtArgs>[]
+    organization: Prisma.$OrganizationPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1264,6 +1508,7 @@ export type $ZonePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     isActive: boolean
     createdAt: Date
     updatedAt: Date
+    organizationId: string | null
   }, ExtArgs["result"]["zone"]>
   composites: {}
 }
@@ -1661,6 +1906,7 @@ export interface Prisma__ZoneClient<T, Null = never, ExtArgs extends runtime.Typ
   city<T extends Prisma.CityDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CityDefaultArgs<ExtArgs>>): Prisma.Prisma__CityClient<runtime.Types.Result.GetResult<Prisma.$CityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   owner<T extends Prisma.Zone$ownerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zone$ownerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   reports<T extends Prisma.Zone$reportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zone$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  organization<T extends Prisma.Zone$organizationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Zone$organizationArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1707,6 +1953,7 @@ export interface ZoneFieldRefs {
   readonly isActive: Prisma.FieldRef<"Zone", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Zone", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Zone", 'DateTime'>
+  readonly organizationId: Prisma.FieldRef<"Zone", 'String'>
 }
     
 
@@ -2148,6 +2395,25 @@ export type Zone$reportsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.ReportScalarFieldEnum | Prisma.ReportScalarFieldEnum[]
+}
+
+/**
+ * Zone.organization
+ */
+export type Zone$organizationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Organization
+   */
+  select?: Prisma.OrganizationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Organization
+   */
+  omit?: Prisma.OrganizationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrganizationInclude<ExtArgs> | null
+  where?: Prisma.OrganizationWhereInput
 }
 
 /**

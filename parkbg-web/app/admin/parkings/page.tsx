@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Navbar } from "@/app/components/layout/navbar";
 
 type PendingParking = {
   id: string;
@@ -71,8 +70,6 @@ export default function AdminParkingsPage() {
 
   return (
     <>
-      <Navbar />
-
       <main style={{ minHeight: "100vh", background: "#f1f5f9", padding: 24 }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div

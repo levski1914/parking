@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  Organization: 'Organization',
   City: 'City',
   Zone: 'Zone',
   Parking: 'Parking',
@@ -85,10 +86,22 @@ export const UserScalarFieldEnum = {
   ownerType: 'ownerType',
   isVerified: 'isVerified',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  organizationId: 'organizationId'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const OrganizationScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  cityId: 'cityId',
+  createdAt: 'createdAt'
+} as const
+
+export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
 
 
 export const CityScalarFieldEnum = {
@@ -123,7 +136,8 @@ export const ZoneScalarFieldEnum = {
   lastVerifiedAt: 'lastVerifiedAt',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  organizationId: 'organizationId'
 } as const
 
 export type ZoneScalarFieldEnum = (typeof ZoneScalarFieldEnum)[keyof typeof ZoneScalarFieldEnum]
@@ -151,7 +165,8 @@ export const ParkingScalarFieldEnum = {
   lastVerifiedAt: 'lastVerifiedAt',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  organizationId: 'organizationId'
 } as const
 
 export type ParkingScalarFieldEnum = (typeof ParkingScalarFieldEnum)[keyof typeof ParkingScalarFieldEnum]

@@ -53,10 +53,48 @@ export class ParkingsService {
       data: { status },
     });
   }
+  async findOne(id: string) {
+    return this.prisma.client.parking.findUnique({
+      where: { id },
+      include: {
+        city: true,
+      },
+    });
+  }
+
+  async findAll() {
+    return this.prisma.client.parking.findMany({
+      include: {
+        city: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
   async updateParking(id: string, data: any) {
     return this.prisma.client.parking.update({
       where: { id },
-      data,
+      data: {
+        name: data.name,
+        parkingType: data.parkingType,
+        address: data.address,
+        latitude: Number(data.latitude),
+        longitude: Number(data.longitude),
+        priceText: data.priceText,
+        approxCapacity:
+          data.approxCapacity === null || data.approxCapacity === undefined
+            ? null
+            : Number(data.approxCapacity),
+        status: data.status,
+      },
+    });
+  }
+
+  async deleteParking(id: string) {
+    return this.prisma.client.parking.delete({
+      where: { id },
     });
   }
 }

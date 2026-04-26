@@ -1,6 +1,6 @@
 "use client";
 
-import { Navbar } from "@/app/components/layout/navbar";
+import { AdminNavbar } from "@/app/components/layout/admin-navbar";
 import mapboxgl from "mapbox-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -301,8 +301,6 @@ export default function AdminZonesPage() {
 
   return (
     <>
-      <Navbar />
-
       <main style={{ minHeight: "100vh", background: "#f1f5f9", padding: 24 }}>
         <div
           style={{

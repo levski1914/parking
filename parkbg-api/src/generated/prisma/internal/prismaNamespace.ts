@@ -385,6 +385,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  Organization: 'Organization',
   City: 'City',
   Zone: 'Zone',
   Parking: 'Parking',
@@ -404,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "city" | "zone" | "parking" | "report"
+    modelProps: "user" | "organization" | "city" | "zone" | "parking" | "report"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -479,6 +480,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    Organization: {
+      payload: Prisma.$OrganizationPayload<ExtArgs>
+      fields: Prisma.OrganizationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OrganizationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OrganizationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationPayload>
+        }
+        findFirst: {
+          args: Prisma.OrganizationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OrganizationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationPayload>
+        }
+        findMany: {
+          args: Prisma.OrganizationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationPayload>[]
+        }
+        create: {
+          args: Prisma.OrganizationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationPayload>
+        }
+        createMany: {
+          args: Prisma.OrganizationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OrganizationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationPayload>[]
+        }
+        delete: {
+          args: Prisma.OrganizationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationPayload>
+        }
+        update: {
+          args: Prisma.OrganizationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationPayload>
+        }
+        deleteMany: {
+          args: Prisma.OrganizationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OrganizationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OrganizationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationPayload>[]
+        }
+        upsert: {
+          args: Prisma.OrganizationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationPayload>
+        }
+        aggregate: {
+          args: Prisma.OrganizationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOrganization>
+        }
+        groupBy: {
+          args: Prisma.OrganizationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OrganizationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OrganizationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OrganizationCountAggregateOutputType> | number
         }
       }
     }
@@ -828,10 +903,22 @@ export const UserScalarFieldEnum = {
   ownerType: 'ownerType',
   isVerified: 'isVerified',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  organizationId: 'organizationId'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const OrganizationScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  cityId: 'cityId',
+  createdAt: 'createdAt'
+} as const
+
+export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
 
 
 export const CityScalarFieldEnum = {
@@ -866,7 +953,8 @@ export const ZoneScalarFieldEnum = {
   lastVerifiedAt: 'lastVerifiedAt',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  organizationId: 'organizationId'
 } as const
 
 export type ZoneScalarFieldEnum = (typeof ZoneScalarFieldEnum)[keyof typeof ZoneScalarFieldEnum]
@@ -894,7 +982,8 @@ export const ParkingScalarFieldEnum = {
   lastVerifiedAt: 'lastVerifiedAt',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  organizationId: 'organizationId'
 } as const
 
 export type ParkingScalarFieldEnum = (typeof ParkingScalarFieldEnum)[keyof typeof ParkingScalarFieldEnum]
@@ -1255,6 +1344,7 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  organization?: Prisma.OrganizationOmit
   city?: Prisma.CityOmit
   zone?: Prisma.ZoneOmit
   parking?: Prisma.ParkingOmit

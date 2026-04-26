@@ -85,18 +85,33 @@ export function Navbar({ citySlug }: NavbarProps) {
             Добави паркинг
           </Link>
 
-          <button
+          <Link
+            href="/login"
             style={{
               padding: "10px 14px",
               borderRadius: 10,
               border: "1px solid #2563eb",
               background: "#2563eb",
               color: "#fff",
-              cursor: "pointer",
+              textDecoration: "none",
             }}
           >
             Вход
-          </button>
+          </Link>
+
+          <Link
+            href="/register"
+            style={{
+              padding: "10px 14px",
+              borderRadius: 10,
+              border: "1px solid #cbd5e1",
+              background: "#fff",
+              color: "#0f172a",
+              textDecoration: "none",
+            }}
+          >
+            Регистрация
+          </Link>
         </div>
       </div>
     </header>

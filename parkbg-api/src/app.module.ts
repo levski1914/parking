@@ -6,6 +6,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { CitiesModule } from './cities/cities.module';
 import { ZonesModule } from './zones/zones.module';
 import { ParkingsModule } from './parkings/parkings.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { ParkingsModule } from './parkings/parkings.module';
     CitiesModule,
     ZonesModule,
     ParkingsModule,
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

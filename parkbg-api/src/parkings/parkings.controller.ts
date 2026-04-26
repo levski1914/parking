@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -37,8 +38,23 @@ export class ParkingsController {
   ) {
     return this.service.updateStatus(id, status);
   }
+  @Get('all')
+  async getAllParkings() {
+    return this.service.findAll();
+  }
+
+  @Get(':id')
+  async getParking(@Param('id') id: string) {
+    return this.service.findOne(id);
+  }
+
   @Patch(':id')
-  updateParking(@Param('id') id: string, @Body() body: any) {
+  async updateParking(@Param('id') id: string, @Body() body: any) {
     return this.service.updateParking(id, body);
+  }
+
+  @Delete(':id')
+  async deleteParking(@Param('id') id: string) {
+    return this.service.deleteParking(id);
   }
 }
