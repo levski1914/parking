@@ -1,12 +1,15 @@
 "use client";
 
+import { useAuth } from "@/app/context/AuthProvider";
 import Link from "next/link";
 
-type NavbarProps = {
-  citySlug?: string;
-};
+export function Navbar({ citySlug }: { citySlug?: string }) {
+  const { user, loading, logout } = useAuth();
 
-export function Navbar({ citySlug }: NavbarProps) {
+  const canSeeAdmin =
+    user?.role === "ADMIN" ||
+    (user?.role === "OWNER" && user?.isVerified === true);
+
   return (
     <header
       style={{
@@ -85,33 +88,48 @@ export function Navbar({ citySlug }: NavbarProps) {
             Добави паркинг
           </Link>
 
-          <Link
-            href="/login"
-            style={{
-              padding: "10px 14px",
-              borderRadius: 10,
-              border: "1px solid #2563eb",
-              background: "#2563eb",
-              color: "#fff",
-              textDecoration: "none",
-            }}
-          >
-            Вход
-          </Link>
+          {!loading && canSeeAdmin && <Link href="/admin">Админ</Link>}
 
-          <Link
-            href="/register"
-            style={{
-              padding: "10px 14px",
-              borderRadius: 10,
-              border: "1px solid #cbd5e1",
-              background: "#fff",
-              color: "#0f172a",
-              textDecoration: "none",
-            }}
-          >
-            Регистрация
-          </Link>
+          {!loading && !user ? (
+            <>
+              <Link
+                href="/login"
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: 10,
+                  border: "1px solid #2563eb",
+                  background: "#2563eb",
+                  color: "#fff",
+                  textDecoration: "none",
+                }}
+              >
+                Вход
+              </Link>
+
+              <Link
+                href="/register"
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: 10,
+                  border: "1px solid #cbd5e1",
+                  background: "#fff",
+                  color: "#0f172a",
+                  textDecoration: "none",
+                }}
+              >
+                Регистрация
+              </Link>
+            </>
+          ) : (
+            !loading &&
+            user && (
+              <>
+                <Link href="/profile">Профил</Link>
+
+                <button onClick={logout}>Изход</button>
+              </>
+            )
+          )}
         </div>
       </div>
     </header>

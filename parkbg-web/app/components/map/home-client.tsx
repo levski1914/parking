@@ -5,7 +5,7 @@ import { MapSection } from "@/app/components/map/map-section";
 import { Sidebar } from "@/app/components/map/sidebar";
 import { Parking, SelectedItem, Zone } from "@/app/components/map/ParkingMap";
 import { Navbar } from "../layout/navbar";
-
+import { RightSidebar } from "@/app/components/map/right-sidebar";
 type HomeClientProps = {
   city: {
     id: string;
@@ -217,11 +217,11 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
       <Navbar citySlug={city.slug} />
 
       <main style={{ minHeight: "100vh", background: "#f1f5f9", padding: 24 }}>
-        <div style={{ maxWidth: 1440, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1680, margin: "0 auto" }}>
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "320px 1fr",
+              gridTemplateColumns: "300px minmax(0, 1fr) 300px",
               gap: 16,
               alignItems: "start",
             }}
@@ -239,9 +239,6 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
               onToggleZones={() => setShowZones((v) => !v)}
               onFindCheapestNearby={findCheapestNearby}
               cheapestNearby={cheapestNearby}
-              availabilityNow={availabilityNow}
-              visibleParkings={visibleParkings}
-              onSelectParkingFromList={handleSelectParking}
               onToggleMunicipal={() => {
                 setTouchedParking(true);
                 setShowMunicipal((v) => !v);
@@ -391,6 +388,14 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
                 )}
               </div>
             </div>
+            <RightSidebar
+              visibleParkings={visibleParkings}
+              availabilityNow={availabilityNow}
+              selectedParkingId={
+                selectedItem?.kind === "parking" ? selectedItem.id : null
+              }
+              onSelectParkingFromList={handleSelectParking}
+            />
           </div>
         </div>
       </main>

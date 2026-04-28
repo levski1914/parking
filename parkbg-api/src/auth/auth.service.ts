@@ -92,7 +92,30 @@ export class AuthService {
 
     return this.generateToken(user);
   }
+  async me(userId: string) {
+    const user = await this.prisma.client.user.findUnique({
+      where: { id: userId },
+      include: {
+        organization: true,
+      },
+    });
 
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+      ownerType: user.ownerType,
+      organizationId: user.organizationId,
+      isVerified: user.isVerified,
+      organization: user.organization,
+    };
+  }
   generateToken(user: any) {
     return {
       access_token: this.jwtService.sign({
@@ -100,6 +123,7 @@ export class AuthService {
         role: user.role,
         ownerType: user.ownerType,
         organizationId: user.organizationId,
+        isVerified: user.isVerified,
       }),
     };
   }

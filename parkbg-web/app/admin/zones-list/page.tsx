@@ -1,5 +1,6 @@
 "use client";
 
+import { AdminGuard } from "@/app/components/auth/AdminGuard";
 import { AdminNavbar } from "@/app/components/layout/admin-navbar";
 
 import { useEffect, useMemo, useState } from "react";
@@ -68,7 +69,7 @@ export default function AdminZonesListPage() {
   }
 
   return (
-    <>
+    <AdminGuard allowMunicipality>
       <main style={{ minHeight: "100vh", background: "#f1f5f9", padding: 24 }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div
@@ -180,6 +181,6 @@ export default function AdminZonesListPage() {
           </div>
         </div>
       </main>
-    </>
+    </AdminGuard>
   );
 }

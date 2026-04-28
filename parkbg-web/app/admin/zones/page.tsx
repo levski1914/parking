@@ -1,9 +1,10 @@
 "use client";
 
+import { AdminGuard } from "@/app/components/auth/AdminGuard";
 import { AdminNavbar } from "@/app/components/layout/admin-navbar";
 import mapboxgl from "mapbox-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
-
+import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
 
 type City = {
@@ -261,10 +262,13 @@ export default function AdminZonesPage() {
       coordinates: [[...points, points[0]]],
     };
 
+    const token = getToken();
+
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/zones`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         cityId,
@@ -276,7 +280,6 @@ export default function AdminZonesPage() {
         polygonGeoJson,
       }),
     });
-
     if (!res.ok) {
       setMessage("Възникна проблем при записването на зоната.");
       return;
@@ -300,7 +303,7 @@ export default function AdminZonesPage() {
   }
 
   return (
-    <>
+    <AdminGuard allowMunicipality>
       <main style={{ minHeight: "100vh", background: "#f1f5f9", padding: 24 }}>
         <div
           style={{
@@ -500,6 +503,6 @@ export default function AdminZonesPage() {
           </div>
         </div>
       </main>
-    </>
+    </AdminGuard>
   );
 }

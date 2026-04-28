@@ -50,39 +50,38 @@ enum ReportStatus {
 }
 
 model User {
-  id             String        @id @default(cuid())
-  email          String        @unique
-  phone          String?       @unique
-  passwordHash   String
-  firstName      String
-  lastName       String?
-  role           UserRole      @default(CLIENT)
-  ownerType      OwnerType?
-  isVerified     Boolean       @default(false)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id           String     @id @default(cuid())
+  email        String     @unique
+  phone        String?    @unique
+  passwordHash String
+  firstName    String
+  lastName     String?
+  role         UserRole   @default(CLIENT)
+  ownerType    OwnerType?
+  isVerified   Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   organizationId String?
   organization   Organization? @relation(fields: [organizationId], references: [id])
-  zones          Zone[]
-  parkings       Parking[]
-  reports        Report[]
+  zones    Zone[]
+  parkings Parking[]
+  reports  Report[]
 
   @@map("users")
 }
 
 model Organization {
-  id     String     @id @default(uuid())
-  name   String
-  type   OwnerType?
-  cityId String
+  id        String   @id @default(uuid())
+  name      String
+  type      OwnerType?
+  cityId    String
 
-  users    User[]
-  parkings Parking[]
-  zones    Zone[]
+  users     User[]
+  parkings  Parking[]
+  zones     Zone[]
 
   createdAt DateTime @default(now())
 }
-
 model City {
   id          String    @id @default(cuid())
   name        String    @unique
@@ -103,6 +102,8 @@ model Zone {
   id               String    @id @default(cuid())
   cityId           String
   ownerUserId      String?
+  organizationId   String?
+
   zoneType         ZoneType
   name             String
   polygonGeoJson   Json
@@ -118,14 +119,14 @@ model Zone {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  city           City          @relation(fields: [cityId], references: [id], onDelete: Cascade)
-  owner          User?         @relation(fields: [ownerUserId], references: [id], onDelete: SetNull)
-  reports        Report[]      @relation("ZoneReports")
-  organization   Organization? @relation(fields: [organizationId], references: [id])
-  organizationId String?
+  city         City          @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  owner        User?         @relation(fields: [ownerUserId], references: [id], onDelete: SetNull)
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  reports      Report[]      @relation("ZoneReports")
 
   @@index([cityId])
   @@index([ownerUserId])
+  @@index([organizationId])
   @@index([zoneType])
   @@map("zones")
 }
@@ -154,12 +155,11 @@ model Parking {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
-  city           City          @relation(fields: [cityId], references: [id], onDelete: Cascade)
-  owner          User?         @relation(fields: [ownerUserId], references: [id], onDelete: SetNull)
-  reports        Report[]      @relation("ParkingReports")
-  organization   Organization? @relation(fields: [organizationId], references: [id])
-  organizationId String?
-
+  city    City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  owner   User?    @relation(fields: [ownerUserId], references: [id], onDelete: SetNull)
+  reports Report[] @relation("ParkingReports")
+organizationId String?
+organization   Organization? @relation(fields: [organizationId], references: [id])
   @@index([cityId])
   @@index([ownerUserId])
   @@index([parkingType])

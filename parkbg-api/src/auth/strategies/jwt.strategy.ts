@@ -15,8 +15,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return {
       userId: payload.sub,
       role: payload.role,
-      ownerType: payload.ownerType, // 🔥 ТОВА ГО ДОБАВИ
+      ownerType: payload.ownerType,
       organizationId: payload.organizationId,
+      isVerified: payload.isVerified,
     };
   }
 }

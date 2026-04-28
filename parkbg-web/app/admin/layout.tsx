@@ -1,4 +1,7 @@
 import { AdminNavbar } from "@/app/components/layout/admin-navbar";
+import { PendingApprovalBanner } from "../components/auth/pending-approval-banner";
+import { AuthProvider } from "../context/AuthProvider";
+import { AdminGuard } from "../components/auth/AdminGuard";
 
 export default function AdminLayout({
   children,
@@ -8,8 +11,15 @@ export default function AdminLayout({
   return (
     <>
       <AdminNavbar />
+
       <main style={{ minHeight: "100vh", background: "#f1f5f9", padding: 24 }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto" }}>{children}</div>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <AuthProvider>
+            <AdminGuard allowMunicipality allowPrivate>
+              {children}
+            </AdminGuard>
+          </AuthProvider>
+        </div>
       </main>
     </>
   );

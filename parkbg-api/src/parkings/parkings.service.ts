@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateParkingDto } from './dto/create-parking.dto';
 
@@ -16,7 +20,23 @@ export class ParkingsService {
     });
   }
 
-  async create(dto: CreateParkingDto) {
+  async create(dto: CreateParkingDto, user: any) {
+    if (user.role === 'CLIENT') {
+      throw new ForbiddenException('Клиент не може да създава паркинги');
+    }
+
+    if (user.role === 'OWNER' && !user.isVerified) {
+      throw new ForbiddenException('Профилът чака одобрение');
+    }
+    if (user.role === 'OWNER') {
+      if (user.ownerType === 'PRIVATE') {
+        dto.parkingType = 'PRIVATE';
+      }
+
+      if (user.ownerType === 'MUNICIPALITY') {
+        dto.parkingType = 'MUNICIPAL';
+      }
+    }
     return this.prisma.client.parking.create({
       data: {
         cityId: dto.cityId,
@@ -27,19 +47,25 @@ export class ParkingsService {
         longitude: dto.longitude,
         priceText: dto.priceText,
         approxCapacity: dto.approxCapacity ?? null,
-        status: 'PENDING',
+        status: user.role === 'ADMIN' ? 'APPROVED' : 'PENDING',
         isActive: true,
+        organizationId: user.role === 'OWNER' ? user.organizationId : null,
       },
     });
   }
 
-  async findPending() {
+  async findPending(user: any) {
+    if (user.role !== 'ADMIN') {
+      throw new ForbiddenException('Само админ има достъп');
+    }
+
     return this.prisma.client.parking.findMany({
       where: {
         status: 'PENDING',
       },
       include: {
         city: true,
+        organization: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -47,33 +73,87 @@ export class ParkingsService {
     });
   }
 
-  async updateStatus(id: string, status: 'APPROVED' | 'REJECTED') {
+  async updateStatus(id: string, status: 'APPROVED' | 'REJECTED', user: any) {
+    if (user.role !== 'ADMIN') {
+      throw new ForbiddenException('Само админ може да одобрява паркинги');
+    }
+
     return this.prisma.client.parking.update({
       where: { id },
       data: { status },
     });
   }
-  async findOne(id: string) {
-    return this.prisma.client.parking.findUnique({
+
+  async findAllForUser(user: any) {
+    if (user.role === 'ADMIN') {
+      return this.prisma.client.parking.findMany({
+        include: {
+          city: true,
+          organization: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+    }
+
+    if (user.role === 'OWNER') {
+      return this.prisma.client.parking.findMany({
+        where: {
+          organizationId: user.organizationId,
+        },
+        include: {
+          city: true,
+          organization: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+    }
+
+    throw new ForbiddenException('Нямаш достъп');
+  }
+
+  async findOneForUser(id: string, user: any) {
+    const parking = await this.prisma.client.parking.findUnique({
       where: { id },
       include: {
         city: true,
+        organization: true,
       },
     });
+
+    if (!parking) {
+      throw new NotFoundException('Паркингът не е намерен');
+    }
+
+    if (
+      user.role !== 'ADMIN' &&
+      parking.organizationId !== user.organizationId
+    ) {
+      throw new ForbiddenException('Нямаш достъп до този паркинг');
+    }
+
+    return parking;
   }
 
-  async findAll() {
-    return this.prisma.client.parking.findMany({
-      include: {
-        city: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
+  async updateParkingForUser(id: string, data: any, user: any) {
+    const parking = await this.prisma.client.parking.findUnique({
+      where: { id },
     });
-  }
 
-  async updateParking(id: string, data: any) {
+    if (!parking) {
+      throw new NotFoundException('Паркингът не е намерен');
+    }
+
+    if (
+      user.role !== 'ADMIN' &&
+      parking.organizationId !== user.organizationId
+    ) {
+      throw new ForbiddenException('Нямаш право да редактираш този паркинг');
+    }
+
     return this.prisma.client.parking.update({
       where: { id },
       data: {
@@ -87,12 +167,27 @@ export class ParkingsService {
           data.approxCapacity === null || data.approxCapacity === undefined
             ? null
             : Number(data.approxCapacity),
-        status: data.status,
+        status: user.role === 'ADMIN' ? data.status : parking.status,
       },
     });
   }
 
-  async deleteParking(id: string) {
+  async deleteParkingForUser(id: string, user: any) {
+    const parking = await this.prisma.client.parking.findUnique({
+      where: { id },
+    });
+
+    if (!parking) {
+      throw new NotFoundException('Паркингът не е намерен');
+    }
+
+    if (
+      user.role !== 'ADMIN' &&
+      parking.organizationId !== user.organizationId
+    ) {
+      throw new ForbiddenException('Нямаш право да изтриеш този паркинг');
+    }
+
     return this.prisma.client.parking.delete({
       where: { id },
     });

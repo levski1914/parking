@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
+import { AdminGuard } from "@/app/components/auth/AdminGuard";
 type PendingParking = {
   id: string;
   name: string;
@@ -22,36 +23,50 @@ export default function AdminParkingsPage() {
   async function loadPending() {
     setLoading(true);
 
+    const token = getToken();
+
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/parkings/pending`,
       {
         cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
     );
 
+    const data = await res.json().catch(() => null);
+
     if (!res.ok) {
-      setMessage("Неуспешно зареждане на чакащите паркинги.");
+      setMessage(data?.message || "Неуспешно зареждане на чакащите паркинги.");
+      setParkings([]);
       setLoading(false);
       return;
     }
 
-    const data = await res.json();
-    setParkings(data);
+    setParkings(Array.isArray(data) ? data : []);
     setLoading(false);
   }
 
   async function updateStatus(id: string, status: "APPROVED" | "REJECTED") {
     setMessage("");
 
+    const token = getToken();
+
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/parkings/${id}/status/${status}`,
       {
         method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
     );
 
+    const data = await res.json().catch(() => null);
+
     if (!res.ok) {
-      setMessage("Възникна проблем при обновяването.");
+      setMessage(data?.message || "Възникна проблем при обновяването.");
       return;
     }
 
@@ -69,7 +84,7 @@ export default function AdminParkingsPage() {
   }, []);
 
   return (
-    <>
+    <AdminGuard>
       <main style={{ minHeight: "100vh", background: "#f1f5f9", padding: 24 }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div
@@ -193,6 +208,6 @@ export default function AdminParkingsPage() {
           </div>
         </div>
       </main>
-    </>
+    </AdminGuard>
   );
 }

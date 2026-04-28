@@ -1,8 +1,8 @@
 "use client";
 
+import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
 type Parking = {
   id: string;
   name: string;
@@ -19,10 +19,29 @@ export default function AdminAllParkingsPage() {
   const [message, setMessage] = useState("");
 
   async function loadParkings() {
+    const token = getToken();
+
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/parkings/all`, {
       cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
+
     const data = await res.json();
+
+    if (!res.ok) {
+      setMessage(data.message || "Нямаш достъп до паркингите.");
+      setParkings([]);
+      return;
+    }
+
+    if (!Array.isArray(data)) {
+      setMessage("Невалиден отговор от сървъра.");
+      setParkings([]);
+      return;
+    }
+
     setParkings(data);
   }
 
@@ -30,15 +49,22 @@ export default function AdminAllParkingsPage() {
     const ok = confirm("Сигурен ли си, че искаш да изтриеш този паркинг?");
     if (!ok) return;
 
+    const token = getToken();
+
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/parkings/${id}`,
       {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
     );
 
+    const data = await res.json().catch(() => null);
+
     if (!res.ok) {
-      setMessage("Проблем при изтриването.");
+      setMessage(data?.message || "Проблем при изтриването.");
       return;
     }
 

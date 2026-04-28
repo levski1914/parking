@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Roles } from './decorators/roles.decorator';
 // import { Roles } from './decorators/roles.decorator';
@@ -18,6 +26,11 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  me(@Req() req: any) {
+    return this.authService.me(req.user.userId);
+  }
   @Post('login')
   login(@Body() dto: any) {
     return this.authService.login(dto);
