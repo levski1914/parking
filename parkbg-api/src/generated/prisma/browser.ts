@@ -33,6 +33,11 @@ export type Organization = Prisma.OrganizationModel
  */
 export type City = Prisma.CityModel
 /**
+ * Model Review
+ * 
+ */
+export type Review = Prisma.ReviewModel
+/**
  * Model Zone
  * 
  */

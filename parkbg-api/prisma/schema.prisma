@@ -66,7 +66,7 @@ model User {
   zones    Zone[]
   parkings Parking[]
   reports  Report[]
-
+reviews Review[]
   @@map("users")
 }
 
@@ -97,7 +97,24 @@ model City {
 
   @@map("cities")
 }
+model Review {
+  id        String   @id @default(cuid())
+  parkingId String
+  userId    String?
 
+  rating    Int
+  comment   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  parking Parking @relation(fields: [parkingId], references: [id], onDelete: Cascade)
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([parkingId])
+  @@index([userId])
+  @@map("reviews")
+}
 model Zone {
   id               String    @id @default(cuid())
   cityId           String
@@ -154,7 +171,7 @@ model Parking {
   isActive         Boolean       @default(true)
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
-
+reviews Review[]
   city    City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
   owner   User?    @relation(fields: [ownerUserId], references: [id], onDelete: SetNull)
   reports Report[] @relation("ParkingReports")

@@ -38,6 +38,7 @@ export default function EditParkingPage() {
         parkingType: data.parkingType || "PRIVATE",
         address: data.address || "",
         latitude: data.latitude || "",
+        phone: data.phone || "",
         longitude: data.longitude || "",
         priceText: data.priceText || "",
         approxCapacity: data.approxCapacity ?? "",
@@ -173,7 +174,12 @@ export default function EditParkingPage() {
               placeholder="Приблизителни места"
               style={inputStyle}
             />
-
+            <input
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              placeholder="Телефон за връзка"
+              style={inputStyle}
+            />
             {user?.role === "ADMIN" && (
               <select
                 value={form.status}

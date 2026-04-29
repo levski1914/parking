@@ -242,6 +242,7 @@ export type UserWhereInput = {
   zones?: Prisma.ZoneListRelationFilter
   parkings?: Prisma.ParkingListRelationFilter
   reports?: Prisma.ReportListRelationFilter
+  reviews?: Prisma.ReviewListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -261,6 +262,7 @@ export type UserOrderByWithRelationInput = {
   zones?: Prisma.ZoneOrderByRelationAggregateInput
   parkings?: Prisma.ParkingOrderByRelationAggregateInput
   reports?: Prisma.ReportOrderByRelationAggregateInput
+  reviews?: Prisma.ReviewOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -283,6 +285,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   zones?: Prisma.ZoneListRelationFilter
   parkings?: Prisma.ParkingListRelationFilter
   reports?: Prisma.ReportListRelationFilter
+  reviews?: Prisma.ReviewListRelationFilter
 }, "id" | "email" | "phone">
 
 export type UserOrderByWithAggregationInput = {
@@ -337,6 +340,7 @@ export type UserCreateInput = {
   zones?: Prisma.ZoneCreateNestedManyWithoutOwnerInput
   parkings?: Prisma.ParkingCreateNestedManyWithoutOwnerInput
   reports?: Prisma.ReportCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -355,6 +359,7 @@ export type UserUncheckedCreateInput = {
   zones?: Prisma.ZoneUncheckedCreateNestedManyWithoutOwnerInput
   parkings?: Prisma.ParkingUncheckedCreateNestedManyWithoutOwnerInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -373,6 +378,7 @@ export type UserUpdateInput = {
   zones?: Prisma.ZoneUpdateManyWithoutOwnerNestedInput
   parkings?: Prisma.ParkingUpdateManyWithoutOwnerNestedInput
   reports?: Prisma.ReportUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -391,6 +397,7 @@ export type UserUncheckedUpdateInput = {
   zones?: Prisma.ZoneUncheckedUpdateManyWithoutOwnerNestedInput
   parkings?: Prisma.ParkingUncheckedUpdateManyWithoutOwnerNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -563,6 +570,22 @@ export type UserUncheckedUpdateManyWithoutOrganizationNestedInput = {
   deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
 }
 
+export type UserCreateNestedOneWithoutReviewsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewsInput, Prisma.UserUncheckedCreateWithoutReviewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewsInput, Prisma.UserUncheckedCreateWithoutReviewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewsInput
+  upsert?: Prisma.UserUpsertWithoutReviewsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReviewsInput, Prisma.UserUpdateWithoutReviewsInput>, Prisma.UserUncheckedUpdateWithoutReviewsInput>
+}
+
 export type UserCreateNestedOneWithoutZonesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutZonesInput, Prisma.UserUncheckedCreateWithoutZonesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutZonesInput
@@ -626,6 +649,7 @@ export type UserCreateWithoutOrganizationInput = {
   zones?: Prisma.ZoneCreateNestedManyWithoutOwnerInput
   parkings?: Prisma.ParkingCreateNestedManyWithoutOwnerInput
   reports?: Prisma.ReportCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOrganizationInput = {
@@ -643,6 +667,7 @@ export type UserUncheckedCreateWithoutOrganizationInput = {
   zones?: Prisma.ZoneUncheckedCreateNestedManyWithoutOwnerInput
   parkings?: Prisma.ParkingUncheckedCreateNestedManyWithoutOwnerInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOrganizationInput = {
@@ -689,6 +714,94 @@ export type UserScalarWhereInput = {
   organizationId?: Prisma.StringNullableFilter<"User"> | string | null
 }
 
+export type UserCreateWithoutReviewsInput = {
+  id?: string
+  email: string
+  phone?: string | null
+  passwordHash: string
+  firstName: string
+  lastName?: string | null
+  role?: $Enums.UserRole
+  ownerType?: $Enums.OwnerType | null
+  isVerified?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  zones?: Prisma.ZoneCreateNestedManyWithoutOwnerInput
+  parkings?: Prisma.ParkingCreateNestedManyWithoutOwnerInput
+  reports?: Prisma.ReportCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutReviewsInput = {
+  id?: string
+  email: string
+  phone?: string | null
+  passwordHash: string
+  firstName: string
+  lastName?: string | null
+  role?: $Enums.UserRole
+  ownerType?: $Enums.OwnerType | null
+  isVerified?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organizationId?: string | null
+  zones?: Prisma.ZoneUncheckedCreateNestedManyWithoutOwnerInput
+  parkings?: Prisma.ParkingUncheckedCreateNestedManyWithoutOwnerInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutReviewsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewsInput, Prisma.UserUncheckedCreateWithoutReviewsInput>
+}
+
+export type UserUpsertWithoutReviewsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReviewsInput, Prisma.UserUncheckedUpdateWithoutReviewsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewsInput, Prisma.UserUncheckedCreateWithoutReviewsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReviewsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReviewsInput, Prisma.UserUncheckedUpdateWithoutReviewsInput>
+}
+
+export type UserUpdateWithoutReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  ownerType?: Prisma.NullableEnumOwnerTypeFieldUpdateOperationsInput | $Enums.OwnerType | null
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutUsersNestedInput
+  zones?: Prisma.ZoneUpdateManyWithoutOwnerNestedInput
+  parkings?: Prisma.ParkingUpdateManyWithoutOwnerNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  ownerType?: Prisma.NullableEnumOwnerTypeFieldUpdateOperationsInput | $Enums.OwnerType | null
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zones?: Prisma.ZoneUncheckedUpdateManyWithoutOwnerNestedInput
+  parkings?: Prisma.ParkingUncheckedUpdateManyWithoutOwnerNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutUserNestedInput
+}
+
 export type UserCreateWithoutZonesInput = {
   id?: string
   email: string
@@ -704,6 +817,7 @@ export type UserCreateWithoutZonesInput = {
   organization?: Prisma.OrganizationCreateNestedOneWithoutUsersInput
   parkings?: Prisma.ParkingCreateNestedManyWithoutOwnerInput
   reports?: Prisma.ReportCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutZonesInput = {
@@ -721,6 +835,7 @@ export type UserUncheckedCreateWithoutZonesInput = {
   organizationId?: string | null
   parkings?: Prisma.ParkingUncheckedCreateNestedManyWithoutOwnerInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutZonesInput = {
@@ -754,6 +869,7 @@ export type UserUpdateWithoutZonesInput = {
   organization?: Prisma.OrganizationUpdateOneWithoutUsersNestedInput
   parkings?: Prisma.ParkingUpdateManyWithoutOwnerNestedInput
   reports?: Prisma.ReportUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutZonesInput = {
@@ -771,6 +887,7 @@ export type UserUncheckedUpdateWithoutZonesInput = {
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   parkings?: Prisma.ParkingUncheckedUpdateManyWithoutOwnerNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutParkingsInput = {
@@ -788,6 +905,7 @@ export type UserCreateWithoutParkingsInput = {
   organization?: Prisma.OrganizationCreateNestedOneWithoutUsersInput
   zones?: Prisma.ZoneCreateNestedManyWithoutOwnerInput
   reports?: Prisma.ReportCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutParkingsInput = {
@@ -805,6 +923,7 @@ export type UserUncheckedCreateWithoutParkingsInput = {
   organizationId?: string | null
   zones?: Prisma.ZoneUncheckedCreateNestedManyWithoutOwnerInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutParkingsInput = {
@@ -838,6 +957,7 @@ export type UserUpdateWithoutParkingsInput = {
   organization?: Prisma.OrganizationUpdateOneWithoutUsersNestedInput
   zones?: Prisma.ZoneUpdateManyWithoutOwnerNestedInput
   reports?: Prisma.ReportUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutParkingsInput = {
@@ -855,6 +975,7 @@ export type UserUncheckedUpdateWithoutParkingsInput = {
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zones?: Prisma.ZoneUncheckedUpdateManyWithoutOwnerNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReportsInput = {
@@ -872,6 +993,7 @@ export type UserCreateWithoutReportsInput = {
   organization?: Prisma.OrganizationCreateNestedOneWithoutUsersInput
   zones?: Prisma.ZoneCreateNestedManyWithoutOwnerInput
   parkings?: Prisma.ParkingCreateNestedManyWithoutOwnerInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReportsInput = {
@@ -889,6 +1011,7 @@ export type UserUncheckedCreateWithoutReportsInput = {
   organizationId?: string | null
   zones?: Prisma.ZoneUncheckedCreateNestedManyWithoutOwnerInput
   parkings?: Prisma.ParkingUncheckedCreateNestedManyWithoutOwnerInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReportsInput = {
@@ -922,6 +1045,7 @@ export type UserUpdateWithoutReportsInput = {
   organization?: Prisma.OrganizationUpdateOneWithoutUsersNestedInput
   zones?: Prisma.ZoneUpdateManyWithoutOwnerNestedInput
   parkings?: Prisma.ParkingUpdateManyWithoutOwnerNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportsInput = {
@@ -939,6 +1063,7 @@ export type UserUncheckedUpdateWithoutReportsInput = {
   organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zones?: Prisma.ZoneUncheckedUpdateManyWithoutOwnerNestedInput
   parkings?: Prisma.ParkingUncheckedUpdateManyWithoutOwnerNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyOrganizationInput = {
@@ -970,6 +1095,7 @@ export type UserUpdateWithoutOrganizationInput = {
   zones?: Prisma.ZoneUpdateManyWithoutOwnerNestedInput
   parkings?: Prisma.ParkingUpdateManyWithoutOwnerNestedInput
   reports?: Prisma.ReportUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOrganizationInput = {
@@ -987,6 +1113,7 @@ export type UserUncheckedUpdateWithoutOrganizationInput = {
   zones?: Prisma.ZoneUncheckedUpdateManyWithoutOwnerNestedInput
   parkings?: Prisma.ParkingUncheckedUpdateManyWithoutOwnerNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1012,12 +1139,14 @@ export type UserCountOutputType = {
   zones: number
   parkings: number
   reports: number
+  reviews: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   zones?: boolean | UserCountOutputTypeCountZonesArgs
   parkings?: boolean | UserCountOutputTypeCountParkingsArgs
   reports?: boolean | UserCountOutputTypeCountReportsArgs
+  reviews?: boolean | UserCountOutputTypeCountReviewsArgs
 }
 
 /**
@@ -1051,6 +1180,13 @@ export type UserCountOutputTypeCountReportsArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.ReportWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReviewWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1069,6 +1205,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   zones?: boolean | Prisma.User$zonesArgs<ExtArgs>
   parkings?: boolean | Prisma.User$parkingsArgs<ExtArgs>
   reports?: boolean | Prisma.User$reportsArgs<ExtArgs>
+  reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1125,6 +1262,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   zones?: boolean | Prisma.User$zonesArgs<ExtArgs>
   parkings?: boolean | Prisma.User$parkingsArgs<ExtArgs>
   reports?: boolean | Prisma.User$reportsArgs<ExtArgs>
+  reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1141,6 +1279,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     zones: Prisma.$ZonePayload<ExtArgs>[]
     parkings: Prisma.$ParkingPayload<ExtArgs>[]
     reports: Prisma.$ReportPayload<ExtArgs>[]
+    reviews: Prisma.$ReviewPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1553,6 +1692,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   zones<T extends Prisma.User$zonesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$zonesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ZonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   parkings<T extends Prisma.User$parkingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$parkingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ParkingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reports<T extends Prisma.User$reportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reviews<T extends Prisma.User$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2083,6 +2223,30 @@ export type User$reportsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.ReportScalarFieldEnum | Prisma.ReportScalarFieldEnum[]
+}
+
+/**
+ * User.reviews
+ */
+export type User$reviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Review
+   */
+  select?: Prisma.ReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Review
+   */
+  omit?: Prisma.ReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
+  where?: Prisma.ReviewWhereInput
+  orderBy?: Prisma.ReviewOrderByWithRelationInput | Prisma.ReviewOrderByWithRelationInput[]
+  cursor?: Prisma.ReviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReviewScalarFieldEnum | Prisma.ReviewScalarFieldEnum[]
 }
 
 /**

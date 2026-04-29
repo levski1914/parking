@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   Organization: 'Organization',
   City: 'City',
+  Review: 'Review',
   Zone: 'Zone',
   Parking: 'Parking',
   Report: 'Report'
@@ -119,10 +120,24 @@ export const CityScalarFieldEnum = {
 export type CityScalarFieldEnum = (typeof CityScalarFieldEnum)[keyof typeof CityScalarFieldEnum]
 
 
+export const ReviewScalarFieldEnum = {
+  id: 'id',
+  parkingId: 'parkingId',
+  userId: 'userId',
+  rating: 'rating',
+  comment: 'comment',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
+
+
 export const ZoneScalarFieldEnum = {
   id: 'id',
   cityId: 'cityId',
   ownerUserId: 'ownerUserId',
+  organizationId: 'organizationId',
   zoneType: 'zoneType',
   name: 'name',
   polygonGeoJson: 'polygonGeoJson',
@@ -136,8 +151,7 @@ export const ZoneScalarFieldEnum = {
   lastVerifiedAt: 'lastVerifiedAt',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  organizationId: 'organizationId'
+  updatedAt: 'updatedAt'
 } as const
 
 export type ZoneScalarFieldEnum = (typeof ZoneScalarFieldEnum)[keyof typeof ZoneScalarFieldEnum]

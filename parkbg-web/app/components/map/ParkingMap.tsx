@@ -24,6 +24,7 @@ export type Parking = {
   longitude: number | string;
   priceText: string;
   approxCapacity?: number | null;
+  phone?: string | null;
 };
 
 export type SelectedItem =
@@ -44,6 +45,7 @@ export type SelectedItem =
       address: string;
       priceText: string;
       approxCapacity?: number | null;
+      phone?: string | null;
     };
 
 type VarnaMapProps = {
@@ -97,6 +99,7 @@ function getParkingsGeoJson(parkings: Parking[]) {
         parkingType: p.parkingType,
         address: p.address,
         priceText: p.priceText,
+        phone: p.phone || "",
         approxCapacity: p.approxCapacity ?? "",
       },
     })),
@@ -319,6 +322,7 @@ export function VarnaMap({
           approxCapacity: f.properties?.approxCapacity
             ? Number(f.properties.approxCapacity)
             : null,
+          phone: String(f.properties?.phone || ""),
         });
       });
 
@@ -413,5 +417,14 @@ export function VarnaMap({
 
     onFocusedParkingHandled?.();
   }, [focusedParkingId, parkings, onFocusedParkingHandled]);
-  return <div ref={ref} style={{ height: 600, borderRadius: 16 }} />;
+  return (
+    <div
+      ref={ref}
+      style={{
+        height: "calc(100vh - 190px)",
+        minHeight: 520,
+        borderRadius: 16,
+      }}
+    />
+  );
 }

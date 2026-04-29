@@ -175,6 +175,7 @@ export default function AddParkingPage() {
     address: "",
     latitude: "",
     longitude: "",
+    phone: "",
     priceText: "",
     approxCapacity: "",
   });
@@ -278,6 +279,7 @@ export default function AddParkingPage() {
                       approxCapacity: form.approxCapacity
                         ? Number(form.approxCapacity)
                         : null,
+                      phone: form.phone || null,
                     }),
                   },
                 );
@@ -295,6 +297,7 @@ export default function AddParkingPage() {
                   address: "",
                   latitude: "",
                   longitude: "",
+                  phone: "",
                   priceText: "",
                   approxCapacity: "",
                 });
@@ -413,7 +416,18 @@ export default function AddParkingPage() {
                   border: "1px solid #cbd5e1",
                 }}
               />
-
+              <input
+                placeholder="Телефон за връзка"
+                value={form.phone}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, phone: e.target.value }))
+                }
+                style={{
+                  padding: 12,
+                  borderRadius: 10,
+                  border: "1px solid #cbd5e1",
+                }}
+              />
               <button
                 type="submit"
                 style={{

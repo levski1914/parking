@@ -1,7 +1,7 @@
 "use client";
 
 import { Parking, SelectedItem } from "./ParkingMap";
-
+import { ParkingReviews } from "./ParkingReviews";
 interface SearchResult {
   id: string;
   kind: "parking" | "zone";
@@ -366,7 +366,29 @@ export function Sidebar({
                     {selectedItem.address || "-"}
                   </div>
                 </div>
+                <div>
+                  <div style={{ fontSize: 13, color: "#64748b" }}>Телефон</div>
 
+                  {selectedItem.phone ? (
+                    <a
+                      href={`tel:${selectedItem.phone}`}
+                      style={{
+                        display: "inline-block",
+                        marginTop: 4,
+                        padding: "8px 12px",
+                        borderRadius: 10,
+                        background: "#16a34a",
+                        color: "#fff",
+                        textDecoration: "none",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Обади се: {selectedItem.phone}
+                    </a>
+                  ) : (
+                    <div style={{ fontWeight: 600 }}>-</div>
+                  )}
+                </div>
                 <div>
                   <div style={{ fontSize: 13, color: "#64748b" }}>
                     Приблизителни места
@@ -380,7 +402,9 @@ export function Sidebar({
           </>
         )}
       </div>
-
+      {selectedItem && selectedItem.kind === "parking" ? (
+        <ParkingReviews parkingId={selectedItem.id} />
+      ) : null}
       <div
         style={{
           padding: 14,

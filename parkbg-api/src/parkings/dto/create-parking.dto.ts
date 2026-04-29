@@ -26,6 +26,7 @@ export class CreateParkingDto {
   @IsNumber()
   latitude: number;
 
+  phone?: string;
   @IsNumber()
   longitude: number;
 

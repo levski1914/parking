@@ -45,6 +45,7 @@ export class ParkingsService {
         address: dto.address,
         latitude: dto.latitude,
         longitude: dto.longitude,
+        phone: dto.phone || null,
         priceText: dto.priceText,
         approxCapacity: dto.approxCapacity ?? null,
         status: user.role === 'ADMIN' ? 'APPROVED' : 'PENDING',
@@ -163,6 +164,7 @@ export class ParkingsService {
         latitude: Number(data.latitude),
         longitude: Number(data.longitude),
         priceText: data.priceText,
+        phone: data.phone || null,
         approxCapacity:
           data.approxCapacity === null || data.approxCapacity === undefined
             ? null

@@ -8,6 +8,7 @@ import { ZonesModule } from './zones/zones.module';
 import { ParkingsModule } from './parkings/parkings.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UsersModule } from './users/users.module';
     ParkingsModule,
     AuthModule,
     UsersModule,
+    ReviewsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
