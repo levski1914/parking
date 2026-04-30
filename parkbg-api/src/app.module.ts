@@ -9,6 +9,7 @@ import { ParkingsModule } from './parkings/parkings.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     AuthModule,
     UsersModule,
     ReviewsModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

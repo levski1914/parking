@@ -7,6 +7,7 @@ import { Parking, SelectedItem, Zone } from "@/app/components/map/ParkingMap";
 import { Navbar } from "../layout/navbar";
 import { RightSidebar } from "@/app/components/map/right-sidebar";
 import { ParkingReviews } from "@/app/components/map/ParkingReviews";
+import { ReportButton } from "@/app/components/map/ReportButton";
 type HomeClientProps = {
   city: {
     id: string;
@@ -577,17 +578,12 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
                           </a>
                         )}
 
-                        <button
-                          style={{
-                            padding: "10px 12px",
-                            borderRadius: 10,
-                            border: "1px solid #cbd5e1",
-                            background: "#fff",
-                            fontWeight: 600,
-                          }}
-                        >
-                          Докладвай проблем
-                        </button>
+                        <ReportButton
+                          targetType={
+                            selectedItem.kind === "parking" ? "PARKING" : "ZONE"
+                          }
+                          targetId={selectedItem.id}
+                        />
                       </>
                     )}
 

@@ -1088,7 +1088,14 @@ export const ReportScalarFieldEnum = {
   zoneId: 'zoneId',
   parkingId: 'parkingId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  adminSeenAt: 'adminSeenAt',
+  ownerSeenAt: 'ownerSeenAt',
+  actionTakenAt: 'actionTakenAt',
+  resolvedAt: 'resolvedAt',
+  ownerNote: 'ownerNote',
+  adminNote: 'adminNote',
+  lastReminderAt: 'lastReminderAt'
 } as const
 
 export type ReportScalarFieldEnum = (typeof ReportScalarFieldEnum)[keyof typeof ReportScalarFieldEnum]

@@ -16,6 +16,7 @@ const adminLinks = [
   { href: "/admin/parkings", label: "Чакащи" },
   { href: "/admin/parkings/all", label: "Паркинги" },
   { href: "/admin/zones", label: "Добави зона" },
+  { href: "/admin/reports", label: "Сигнали" },
   { href: "/admin/zones-list", label: "Зони" },
 ];
 
@@ -23,11 +24,13 @@ const municipalOwnerLinks = [
   { href: "/admin/zones-list", label: "Моите зони" },
   { href: "/admin/zones", label: "Добави зона" },
   { href: "/admin/parkings/all", label: "Моите общински паркинги" },
+  { href: "/admin/reports", label: "Сигнали" },
 ];
 
 const privateOwnerLinks = [
   { href: "/admin/parkings/all", label: "Моите паркинги" },
   { href: "/admin/parkings/new", label: "Добави паркинг" },
+  { href: "/admin/reports", label: "Сигнали" },
 ];
 
 function getLinks(payload: TokenPayload | null) {

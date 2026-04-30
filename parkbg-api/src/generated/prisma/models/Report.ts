@@ -36,6 +36,13 @@ export type ReportMinAggregateOutputType = {
   parkingId: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  adminSeenAt: Date | null
+  ownerSeenAt: Date | null
+  actionTakenAt: Date | null
+  resolvedAt: Date | null
+  ownerNote: string | null
+  adminNote: string | null
+  lastReminderAt: Date | null
 }
 
 export type ReportMaxAggregateOutputType = {
@@ -50,6 +57,13 @@ export type ReportMaxAggregateOutputType = {
   parkingId: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  adminSeenAt: Date | null
+  ownerSeenAt: Date | null
+  actionTakenAt: Date | null
+  resolvedAt: Date | null
+  ownerNote: string | null
+  adminNote: string | null
+  lastReminderAt: Date | null
 }
 
 export type ReportCountAggregateOutputType = {
@@ -64,6 +78,13 @@ export type ReportCountAggregateOutputType = {
   parkingId: number
   createdAt: number
   updatedAt: number
+  adminSeenAt: number
+  ownerSeenAt: number
+  actionTakenAt: number
+  resolvedAt: number
+  ownerNote: number
+  adminNote: number
+  lastReminderAt: number
   _all: number
 }
 
@@ -80,6 +101,13 @@ export type ReportMinAggregateInputType = {
   parkingId?: true
   createdAt?: true
   updatedAt?: true
+  adminSeenAt?: true
+  ownerSeenAt?: true
+  actionTakenAt?: true
+  resolvedAt?: true
+  ownerNote?: true
+  adminNote?: true
+  lastReminderAt?: true
 }
 
 export type ReportMaxAggregateInputType = {
@@ -94,6 +122,13 @@ export type ReportMaxAggregateInputType = {
   parkingId?: true
   createdAt?: true
   updatedAt?: true
+  adminSeenAt?: true
+  ownerSeenAt?: true
+  actionTakenAt?: true
+  resolvedAt?: true
+  ownerNote?: true
+  adminNote?: true
+  lastReminderAt?: true
 }
 
 export type ReportCountAggregateInputType = {
@@ -108,6 +143,13 @@ export type ReportCountAggregateInputType = {
   parkingId?: true
   createdAt?: true
   updatedAt?: true
+  adminSeenAt?: true
+  ownerSeenAt?: true
+  actionTakenAt?: true
+  resolvedAt?: true
+  ownerNote?: true
+  adminNote?: true
+  lastReminderAt?: true
   _all?: true
 }
 
@@ -195,6 +237,13 @@ export type ReportGroupByOutputType = {
   parkingId: string | null
   createdAt: Date
   updatedAt: Date
+  adminSeenAt: Date | null
+  ownerSeenAt: Date | null
+  actionTakenAt: Date | null
+  resolvedAt: Date | null
+  ownerNote: string | null
+  adminNote: string | null
+  lastReminderAt: Date | null
   _count: ReportCountAggregateOutputType | null
   _min: ReportMinAggregateOutputType | null
   _max: ReportMaxAggregateOutputType | null
@@ -230,6 +279,13 @@ export type ReportWhereInput = {
   parkingId?: Prisma.StringNullableFilter<"Report"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Report"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Report"> | Date | string
+  adminSeenAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  ownerSeenAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  actionTakenAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  resolvedAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  ownerNote?: Prisma.StringNullableFilter<"Report"> | string | null
+  adminNote?: Prisma.StringNullableFilter<"Report"> | string | null
+  lastReminderAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   zone?: Prisma.XOR<Prisma.ZoneNullableScalarRelationFilter, Prisma.ZoneWhereInput> | null
   parking?: Prisma.XOR<Prisma.ParkingNullableScalarRelationFilter, Prisma.ParkingWhereInput> | null
@@ -247,6 +303,13 @@ export type ReportOrderByWithRelationInput = {
   parkingId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  adminSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  actionTakenAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  adminNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastReminderAt?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   zone?: Prisma.ZoneOrderByWithRelationInput
   parking?: Prisma.ParkingOrderByWithRelationInput
@@ -267,6 +330,13 @@ export type ReportWhereUniqueInput = Prisma.AtLeast<{
   parkingId?: Prisma.StringNullableFilter<"Report"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Report"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Report"> | Date | string
+  adminSeenAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  ownerSeenAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  actionTakenAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  resolvedAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  ownerNote?: Prisma.StringNullableFilter<"Report"> | string | null
+  adminNote?: Prisma.StringNullableFilter<"Report"> | string | null
+  lastReminderAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   zone?: Prisma.XOR<Prisma.ZoneNullableScalarRelationFilter, Prisma.ZoneWhereInput> | null
   parking?: Prisma.XOR<Prisma.ParkingNullableScalarRelationFilter, Prisma.ParkingWhereInput> | null
@@ -284,6 +354,13 @@ export type ReportOrderByWithAggregationInput = {
   parkingId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  adminSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  actionTakenAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  adminNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastReminderAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ReportCountOrderByAggregateInput
   _max?: Prisma.ReportMaxOrderByAggregateInput
   _min?: Prisma.ReportMinOrderByAggregateInput
@@ -304,6 +381,13 @@ export type ReportScalarWhereWithAggregatesInput = {
   parkingId?: Prisma.StringNullableWithAggregatesFilter<"Report"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Report"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Report"> | Date | string
+  adminSeenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Report"> | Date | string | null
+  ownerSeenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Report"> | Date | string | null
+  actionTakenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Report"> | Date | string | null
+  resolvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Report"> | Date | string | null
+  ownerNote?: Prisma.StringNullableWithAggregatesFilter<"Report"> | string | null
+  adminNote?: Prisma.StringNullableWithAggregatesFilter<"Report"> | string | null
+  lastReminderAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Report"> | Date | string | null
 }
 
 export type ReportCreateInput = {
@@ -315,6 +399,13 @@ export type ReportCreateInput = {
   status?: $Enums.ReportStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminSeenAt?: Date | string | null
+  ownerSeenAt?: Date | string | null
+  actionTakenAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  ownerNote?: string | null
+  adminNote?: string | null
+  lastReminderAt?: Date | string | null
   user?: Prisma.UserCreateNestedOneWithoutReportsInput
   zone?: Prisma.ZoneCreateNestedOneWithoutReportsInput
   parking?: Prisma.ParkingCreateNestedOneWithoutReportsInput
@@ -332,6 +423,13 @@ export type ReportUncheckedCreateInput = {
   parkingId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminSeenAt?: Date | string | null
+  ownerSeenAt?: Date | string | null
+  actionTakenAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  ownerNote?: string | null
+  adminNote?: string | null
+  lastReminderAt?: Date | string | null
 }
 
 export type ReportUpdateInput = {
@@ -343,6 +441,13 @@ export type ReportUpdateInput = {
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actionTakenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneWithoutReportsNestedInput
   zone?: Prisma.ZoneUpdateOneWithoutReportsNestedInput
   parking?: Prisma.ParkingUpdateOneWithoutReportsNestedInput
@@ -360,6 +465,13 @@ export type ReportUncheckedUpdateInput = {
   parkingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actionTakenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ReportCreateManyInput = {
@@ -374,6 +486,13 @@ export type ReportCreateManyInput = {
   parkingId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminSeenAt?: Date | string | null
+  ownerSeenAt?: Date | string | null
+  actionTakenAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  ownerNote?: string | null
+  adminNote?: string | null
+  lastReminderAt?: Date | string | null
 }
 
 export type ReportUpdateManyMutationInput = {
@@ -385,6 +504,13 @@ export type ReportUpdateManyMutationInput = {
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actionTakenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ReportUncheckedUpdateManyInput = {
@@ -399,6 +525,13 @@ export type ReportUncheckedUpdateManyInput = {
   parkingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actionTakenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ReportListRelationFilter = {
@@ -423,6 +556,13 @@ export type ReportCountOrderByAggregateInput = {
   parkingId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  adminSeenAt?: Prisma.SortOrder
+  ownerSeenAt?: Prisma.SortOrder
+  actionTakenAt?: Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrder
+  ownerNote?: Prisma.SortOrder
+  adminNote?: Prisma.SortOrder
+  lastReminderAt?: Prisma.SortOrder
 }
 
 export type ReportMaxOrderByAggregateInput = {
@@ -437,6 +577,13 @@ export type ReportMaxOrderByAggregateInput = {
   parkingId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  adminSeenAt?: Prisma.SortOrder
+  ownerSeenAt?: Prisma.SortOrder
+  actionTakenAt?: Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrder
+  ownerNote?: Prisma.SortOrder
+  adminNote?: Prisma.SortOrder
+  lastReminderAt?: Prisma.SortOrder
 }
 
 export type ReportMinOrderByAggregateInput = {
@@ -451,6 +598,13 @@ export type ReportMinOrderByAggregateInput = {
   parkingId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  adminSeenAt?: Prisma.SortOrder
+  ownerSeenAt?: Prisma.SortOrder
+  actionTakenAt?: Prisma.SortOrder
+  resolvedAt?: Prisma.SortOrder
+  ownerNote?: Prisma.SortOrder
+  adminNote?: Prisma.SortOrder
+  lastReminderAt?: Prisma.SortOrder
 }
 
 export type ReportCreateNestedManyWithoutUserInput = {
@@ -596,6 +750,13 @@ export type ReportCreateWithoutUserInput = {
   status?: $Enums.ReportStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminSeenAt?: Date | string | null
+  ownerSeenAt?: Date | string | null
+  actionTakenAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  ownerNote?: string | null
+  adminNote?: string | null
+  lastReminderAt?: Date | string | null
   zone?: Prisma.ZoneCreateNestedOneWithoutReportsInput
   parking?: Prisma.ParkingCreateNestedOneWithoutReportsInput
 }
@@ -611,6 +772,13 @@ export type ReportUncheckedCreateWithoutUserInput = {
   parkingId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminSeenAt?: Date | string | null
+  ownerSeenAt?: Date | string | null
+  actionTakenAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  ownerNote?: string | null
+  adminNote?: string | null
+  lastReminderAt?: Date | string | null
 }
 
 export type ReportCreateOrConnectWithoutUserInput = {
@@ -654,6 +822,13 @@ export type ReportScalarWhereInput = {
   parkingId?: Prisma.StringNullableFilter<"Report"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Report"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Report"> | Date | string
+  adminSeenAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  ownerSeenAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  actionTakenAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  resolvedAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  ownerNote?: Prisma.StringNullableFilter<"Report"> | string | null
+  adminNote?: Prisma.StringNullableFilter<"Report"> | string | null
+  lastReminderAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
 }
 
 export type ReportCreateWithoutZoneInput = {
@@ -665,6 +840,13 @@ export type ReportCreateWithoutZoneInput = {
   status?: $Enums.ReportStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminSeenAt?: Date | string | null
+  ownerSeenAt?: Date | string | null
+  actionTakenAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  ownerNote?: string | null
+  adminNote?: string | null
+  lastReminderAt?: Date | string | null
   user?: Prisma.UserCreateNestedOneWithoutReportsInput
   parking?: Prisma.ParkingCreateNestedOneWithoutReportsInput
 }
@@ -680,6 +862,13 @@ export type ReportUncheckedCreateWithoutZoneInput = {
   parkingId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminSeenAt?: Date | string | null
+  ownerSeenAt?: Date | string | null
+  actionTakenAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  ownerNote?: string | null
+  adminNote?: string | null
+  lastReminderAt?: Date | string | null
 }
 
 export type ReportCreateOrConnectWithoutZoneInput = {
@@ -717,6 +906,13 @@ export type ReportCreateWithoutParkingInput = {
   status?: $Enums.ReportStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminSeenAt?: Date | string | null
+  ownerSeenAt?: Date | string | null
+  actionTakenAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  ownerNote?: string | null
+  adminNote?: string | null
+  lastReminderAt?: Date | string | null
   user?: Prisma.UserCreateNestedOneWithoutReportsInput
   zone?: Prisma.ZoneCreateNestedOneWithoutReportsInput
 }
@@ -732,6 +928,13 @@ export type ReportUncheckedCreateWithoutParkingInput = {
   zoneId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminSeenAt?: Date | string | null
+  ownerSeenAt?: Date | string | null
+  actionTakenAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  ownerNote?: string | null
+  adminNote?: string | null
+  lastReminderAt?: Date | string | null
 }
 
 export type ReportCreateOrConnectWithoutParkingInput = {
@@ -771,6 +974,13 @@ export type ReportCreateManyUserInput = {
   parkingId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminSeenAt?: Date | string | null
+  ownerSeenAt?: Date | string | null
+  actionTakenAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  ownerNote?: string | null
+  adminNote?: string | null
+  lastReminderAt?: Date | string | null
 }
 
 export type ReportUpdateWithoutUserInput = {
@@ -782,6 +992,13 @@ export type ReportUpdateWithoutUserInput = {
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actionTakenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   zone?: Prisma.ZoneUpdateOneWithoutReportsNestedInput
   parking?: Prisma.ParkingUpdateOneWithoutReportsNestedInput
 }
@@ -797,6 +1014,13 @@ export type ReportUncheckedUpdateWithoutUserInput = {
   parkingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actionTakenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ReportUncheckedUpdateManyWithoutUserInput = {
@@ -810,6 +1034,13 @@ export type ReportUncheckedUpdateManyWithoutUserInput = {
   parkingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actionTakenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ReportCreateManyZoneInput = {
@@ -823,6 +1054,13 @@ export type ReportCreateManyZoneInput = {
   parkingId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminSeenAt?: Date | string | null
+  ownerSeenAt?: Date | string | null
+  actionTakenAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  ownerNote?: string | null
+  adminNote?: string | null
+  lastReminderAt?: Date | string | null
 }
 
 export type ReportUpdateWithoutZoneInput = {
@@ -834,6 +1072,13 @@ export type ReportUpdateWithoutZoneInput = {
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actionTakenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneWithoutReportsNestedInput
   parking?: Prisma.ParkingUpdateOneWithoutReportsNestedInput
 }
@@ -849,6 +1094,13 @@ export type ReportUncheckedUpdateWithoutZoneInput = {
   parkingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actionTakenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ReportUncheckedUpdateManyWithoutZoneInput = {
@@ -862,6 +1114,13 @@ export type ReportUncheckedUpdateManyWithoutZoneInput = {
   parkingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actionTakenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ReportCreateManyParkingInput = {
@@ -875,6 +1134,13 @@ export type ReportCreateManyParkingInput = {
   zoneId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  adminSeenAt?: Date | string | null
+  ownerSeenAt?: Date | string | null
+  actionTakenAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  ownerNote?: string | null
+  adminNote?: string | null
+  lastReminderAt?: Date | string | null
 }
 
 export type ReportUpdateWithoutParkingInput = {
@@ -886,6 +1152,13 @@ export type ReportUpdateWithoutParkingInput = {
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actionTakenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneWithoutReportsNestedInput
   zone?: Prisma.ZoneUpdateOneWithoutReportsNestedInput
 }
@@ -901,6 +1174,13 @@ export type ReportUncheckedUpdateWithoutParkingInput = {
   zoneId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actionTakenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ReportUncheckedUpdateManyWithoutParkingInput = {
@@ -914,6 +1194,13 @@ export type ReportUncheckedUpdateManyWithoutParkingInput = {
   zoneId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  adminSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  actionTakenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -930,6 +1217,13 @@ export type ReportSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   parkingId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  adminSeenAt?: boolean
+  ownerSeenAt?: boolean
+  actionTakenAt?: boolean
+  resolvedAt?: boolean
+  ownerNote?: boolean
+  adminNote?: boolean
+  lastReminderAt?: boolean
   user?: boolean | Prisma.Report$userArgs<ExtArgs>
   zone?: boolean | Prisma.Report$zoneArgs<ExtArgs>
   parking?: boolean | Prisma.Report$parkingArgs<ExtArgs>
@@ -947,6 +1241,13 @@ export type ReportSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   parkingId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  adminSeenAt?: boolean
+  ownerSeenAt?: boolean
+  actionTakenAt?: boolean
+  resolvedAt?: boolean
+  ownerNote?: boolean
+  adminNote?: boolean
+  lastReminderAt?: boolean
   user?: boolean | Prisma.Report$userArgs<ExtArgs>
   zone?: boolean | Prisma.Report$zoneArgs<ExtArgs>
   parking?: boolean | Prisma.Report$parkingArgs<ExtArgs>
@@ -964,6 +1265,13 @@ export type ReportSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   parkingId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  adminSeenAt?: boolean
+  ownerSeenAt?: boolean
+  actionTakenAt?: boolean
+  resolvedAt?: boolean
+  ownerNote?: boolean
+  adminNote?: boolean
+  lastReminderAt?: boolean
   user?: boolean | Prisma.Report$userArgs<ExtArgs>
   zone?: boolean | Prisma.Report$zoneArgs<ExtArgs>
   parking?: boolean | Prisma.Report$parkingArgs<ExtArgs>
@@ -981,9 +1289,16 @@ export type ReportSelectScalar = {
   parkingId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  adminSeenAt?: boolean
+  ownerSeenAt?: boolean
+  actionTakenAt?: boolean
+  resolvedAt?: boolean
+  ownerNote?: boolean
+  adminNote?: boolean
+  lastReminderAt?: boolean
 }
 
-export type ReportOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "targetType" | "targetId" | "userId" | "reason" | "note" | "status" | "zoneId" | "parkingId" | "createdAt" | "updatedAt", ExtArgs["result"]["report"]>
+export type ReportOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "targetType" | "targetId" | "userId" | "reason" | "note" | "status" | "zoneId" | "parkingId" | "createdAt" | "updatedAt" | "adminSeenAt" | "ownerSeenAt" | "actionTakenAt" | "resolvedAt" | "ownerNote" | "adminNote" | "lastReminderAt", ExtArgs["result"]["report"]>
 export type ReportInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Report$userArgs<ExtArgs>
   zone?: boolean | Prisma.Report$zoneArgs<ExtArgs>
@@ -1019,6 +1334,13 @@ export type $ReportPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     parkingId: string | null
     createdAt: Date
     updatedAt: Date
+    adminSeenAt: Date | null
+    ownerSeenAt: Date | null
+    actionTakenAt: Date | null
+    resolvedAt: Date | null
+    ownerNote: string | null
+    adminNote: string | null
+    lastReminderAt: Date | null
   }, ExtArgs["result"]["report"]>
   composites: {}
 }
@@ -1456,6 +1778,13 @@ export interface ReportFieldRefs {
   readonly parkingId: Prisma.FieldRef<"Report", 'String'>
   readonly createdAt: Prisma.FieldRef<"Report", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Report", 'DateTime'>
+  readonly adminSeenAt: Prisma.FieldRef<"Report", 'DateTime'>
+  readonly ownerSeenAt: Prisma.FieldRef<"Report", 'DateTime'>
+  readonly actionTakenAt: Prisma.FieldRef<"Report", 'DateTime'>
+  readonly resolvedAt: Prisma.FieldRef<"Report", 'DateTime'>
+  readonly ownerNote: Prisma.FieldRef<"Report", 'String'>
+  readonly adminNote: Prisma.FieldRef<"Report", 'String'>
+  readonly lastReminderAt: Prisma.FieldRef<"Report", 'DateTime'>
 }
     
 

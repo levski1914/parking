@@ -2,6 +2,8 @@
 
 import { Parking, SelectedItem } from "./ParkingMap";
 import { ParkingReviews } from "./ParkingReviews";
+import { ReportButton } from "./ReportButton";
+
 interface SearchResult {
   id: string;
   kind: "parking" | "zone";
@@ -341,7 +343,7 @@ export function Sidebar({
                     {selectedItem.smsNumber || "-"}
                   </div>
                 </div>
-
+                <ReportButton targetType="ZONE" targetId={selectedItem.id} />
                 <div>
                   <div style={{ fontSize: 13, color: "#64748b" }}>
                     Примерен SMS
@@ -397,6 +399,7 @@ export function Sidebar({
                     {selectedItem.approxCapacity ?? "-"}
                   </div>
                 </div>
+                <ReportButton targetType="PARKING" targetId={selectedItem.id} />
               </div>
             )}
           </>

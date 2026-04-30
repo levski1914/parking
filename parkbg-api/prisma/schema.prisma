@@ -197,7 +197,15 @@ model Report {
   parkingId  String?
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
+adminSeenAt DateTime?
+ownerSeenAt DateTime?
+actionTakenAt DateTime?
+resolvedAt DateTime?
 
+ownerNote String?
+adminNote String?
+
+lastReminderAt DateTime?
   user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   zone    Zone?    @relation("ZoneReports", fields: [zoneId], references: [id], onDelete: Cascade)
   parking Parking? @relation("ParkingReports", fields: [parkingId], references: [id], onDelete: Cascade)
