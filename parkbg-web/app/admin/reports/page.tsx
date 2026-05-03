@@ -78,6 +78,16 @@ export default function AdminReportsPage() {
 
     const data = await res.json().catch(() => []);
     setReports(Array.isArray(data) ? data : []);
+    const cleanData = Array.isArray(data) ? data : [];
+
+    setReports(cleanData);
+    setLoading(false);
+
+    await markVisibleReportsAsSeen(
+      cleanData.filter(
+        (r: Report) => r.status === "OPEN" || r.status === "REVIEWED",
+      ),
+    );
     setLoading(false);
   }
 
@@ -145,7 +155,26 @@ export default function AdminReportsPage() {
       return { background: "#dcfce7", color: "#166534" };
     return { background: "#fee2e2", color: "#991b1b" };
   }
+  async function markVisibleReportsAsSeen(reportsToMark: Report[]) {
+    const token = getToken();
 
+    const unseenReports = reportsToMark.filter((r) => {
+      if (user?.role === "ADMIN") return !r.adminSeenAt;
+      if (user?.role === "OWNER") return !r.ownerSeenAt;
+      return false;
+    });
+
+    await Promise.all(
+      unseenReports.map((r) =>
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/reports/${r.id}/seen`, {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+      ),
+    );
+  }
   return (
     <main style={{ padding: 24 }}>
       <div style={{ marginBottom: 20 }}>
@@ -334,10 +363,6 @@ export default function AdminReportsPage() {
                     flexWrap: "wrap",
                   }}
                 >
-                  <button onClick={() => markSeen(r.id)} style={buttonStyle}>
-                    Маркирай видяно
-                  </button>
-
                   <button
                     onClick={() => markActionTaken(r.id)}
                     style={buttonStyle}

@@ -12,7 +12,6 @@ export function removeToken() {
   localStorage.removeItem("token");
   window.dispatchEvent(new Event("auth-changed"));
 }
-
 export async function getMe() {
   const token = getToken();
 
@@ -25,7 +24,7 @@ export async function getMe() {
   });
 
   if (!res.ok) {
-    removeToken();
+    localStorage.removeItem("token");
     return null;
   }
 

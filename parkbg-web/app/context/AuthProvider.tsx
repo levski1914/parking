@@ -39,6 +39,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   async function refreshUser() {
+    setLoading(true);
+
     const token = getToken();
 
     if (!token) {
@@ -48,10 +50,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     const me = await getMe();
+
+    if (!me) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     setUser(me);
     setLoading(false);
   }
-
   function logout() {
     removeToken();
     setUser(null);

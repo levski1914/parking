@@ -1,5 +1,7 @@
+// "use client";
 import Link from "next/link";
 import { Navbar } from "@/app/components/layout/navbar";
+// import { useEffect } from "react";
 
 async function getCities() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cities`, {
