@@ -176,6 +176,7 @@ export function VarnaMap({
         if (!onBoundsChange) return;
 
         const b = map.getBounds();
+        if (!b) return;
 
         onBoundsChange({
           north: b.getNorth(),

@@ -23,7 +23,7 @@ export const metadata = {
   title: "ParkBG",
   description: "Паркинги, зони и информация за паркиране в България.",
   manifest: "/manifest.json",
-  themeColor: "#2563eb",
+
   appleWebApp: {
     capable: true,
     title: "ParkBG",

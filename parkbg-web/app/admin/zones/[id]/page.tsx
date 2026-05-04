@@ -49,7 +49,7 @@ export default function EditZonePage() {
     const map = mapRef.current;
     if (!map || !map.isStyleLoaded()) return;
 
-    const polygon =
+    const polygon: GeoJSON.Feature<GeoJSON.Polygon> | null =
       points.length >= 3
         ? {
             type: "Feature",
@@ -57,6 +57,7 @@ export default function EditZonePage() {
               type: "Polygon",
               coordinates: [[...points, points[0]]],
             },
+            properties: {},
           }
         : null;
 
