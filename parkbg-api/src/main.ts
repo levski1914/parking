@@ -8,7 +8,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000',
       'https://parking-j0e2m98zl-lamborghinigd-4806s-projects.vercel.app',
-      'https://parking-three-iota.vercel.app/',
+      'https://parking-three-iota.vercel.app',
     ],
     credentials: true,
   });
