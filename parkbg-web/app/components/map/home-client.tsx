@@ -61,7 +61,15 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
   const [mobileTab, setMobileTab] = useState<
     "parkings" | "nearby" | "details" | "filters"
   >("parkings");
-  const [mobileSheetOpen, setMobileSheetOpen] = useState(true);
+  const SHEET_MIN_VISIBLE = 86;
+  const SHEET_MAX_VH = 0.86;
+
+  const [sheetTranslateY, setSheetTranslateY] = useState(0);
+  const [sheetHeight, setSheetHeight] = useState(0);
+  const dragStartYRef = useRef<number | null>(null);
+  const dragStartTranslateRef = useRef(0);
+  const sheetRef = useRef<HTMLDivElement | null>(null);
+
   const [userLocation, setUserLocation] = useState<{
     lat: number;
     lng: number;
@@ -92,7 +100,7 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
 
     if (isMobile) {
       setMobileTab("details");
-      setMobileSheetOpen(true);
+      openSheetHalf();
     }
   };
 
@@ -108,12 +116,25 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
 
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+  useEffect(() => {
+    if (!isMobile) return;
 
+    function updateSheetSize() {
+      const h = window.innerHeight * SHEET_MAX_VH;
+      setSheetHeight(h);
+      setSheetTranslateY(h * 0.42);
+    }
+
+    updateSheetSize();
+    window.addEventListener("resize", updateSheetSize);
+
+    return () => window.removeEventListener("resize", updateSheetSize);
+  }, [isMobile]);
   useEffect(() => {
     if (!isMobile || !selectedItem) return;
 
     setMobileTab("details");
-    setMobileSheetOpen(true);
+    openSheetHalf();
   }, [selectedItem, isMobile]);
   function getAvailabilityLabel(capacity?: number | null) {
     if (!capacity || capacity <= 20) return "Ограничени места";
@@ -309,7 +330,7 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
 
         setLocationMessage("Локацията е намерена.");
         setMobileTab("nearby");
-        setMobileSheetOpen(true);
+        openSheetHalf();
       },
       () => {
         setLocationMessage("Не успяхме да вземем локацията.");
@@ -354,6 +375,94 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
     };
   }
 
+  function clamp(value: number, min: number, max: number) {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  function getMaxTranslate() {
+    return Math.max(sheetHeight - SHEET_MIN_VISIBLE, 0);
+  }
+
+  function handleSheetPointerDown(e: React.PointerEvent<HTMLButtonElement>) {
+    dragStartYRef.current = e.clientY;
+    dragStartTranslateRef.current = sheetTranslateY;
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }
+
+  function handleSheetPointerMove(e: React.PointerEvent<HTMLButtonElement>) {
+    if (dragStartYRef.current === null) return;
+
+    const diff = e.clientY - dragStartYRef.current;
+    const next = clamp(
+      dragStartTranslateRef.current + diff,
+      0,
+      getMaxTranslate(),
+    );
+
+    setSheetTranslateY(next);
+  }
+
+  function handleSheetPointerUp(e: React.PointerEvent<HTMLButtonElement>) {
+    if (dragStartYRef.current === null) return;
+
+    dragStartYRef.current = null;
+    e.currentTarget.releasePointerCapture(e.pointerId);
+
+    const max = getMaxTranslate();
+    const current = sheetTranslateY;
+
+    const full = 0;
+    const half = max * 0.48;
+    const collapsed = max;
+
+    const nearest = [full, half, collapsed].reduce((best, point) => {
+      return Math.abs(point - current) < Math.abs(best - current)
+        ? point
+        : best;
+    }, half);
+
+    setSheetTranslateY(nearest);
+  }
+
+  function openSheetHalf() {
+    const max = getMaxTranslate();
+
+    if (!max) return;
+
+    setSheetTranslateY(max * 0.48);
+  }
+  function isSheetCollapsed() {
+    const max = getMaxTranslate();
+    return sheetTranslateY > max - 20;
+  }
+
+  function handleSheetHandleClick() {
+    const max = getMaxTranslate();
+
+    if (isSheetCollapsed()) {
+      setSheetTranslateY(max * 0.48);
+      return;
+    }
+
+    setSheetTranslateY(max);
+  }
+
+  function openSheetIfCollapsed() {
+    if (isSheetCollapsed()) {
+      openSheetHalf();
+    }
+  }
+
+  function handleMobileTabClick(tabKey: typeof mobileTab) {
+    setMobileTab(tabKey);
+
+    const max = getMaxTranslate();
+    if (!max) return;
+
+    if (isSheetCollapsed()) {
+      setSheetTranslateY(max * 0.48);
+    }
+  }
   return (
     <>
       <Navbar citySlug={city.slug} />
@@ -564,33 +673,45 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
 
         {isMobile && (
           <div
+            ref={sheetRef}
             style={{
               position: "fixed",
               left: 0,
               right: 0,
               bottom: 0,
               zIndex: 60,
+              height: sheetHeight || "86vh",
               background: "#fff",
               borderTop: "1px solid #e2e8f0",
               borderTopLeftRadius: 18,
               borderTopRightRadius: 18,
-              maxHeight: mobileSheetOpen ? "60vh" : 86,
               overflow: "hidden",
               boxShadow: "0 -8px 30px rgba(15,23,42,0.12)",
-              transition: "max-height 0.25s ease",
+              transform: `translateY(${sheetTranslateY}px)`,
+              transition:
+                dragStartYRef.current === null
+                  ? "transform 0.22s ease"
+                  : "none",
+              willChange: "transform",
             }}
           >
             <button
               type="button"
-              onClick={() => setMobileSheetOpen((v) => !v)}
+              onClick={handleSheetHandleClick}
+              onPointerDown={handleSheetPointerDown}
+              onPointerMove={handleSheetPointerMove}
+              onPointerUp={handleSheetPointerUp}
+              onPointerCancel={handleSheetPointerUp}
               style={{
                 width: "100%",
-                height: 28,
+                height: 32,
                 border: "none",
                 background: "#fff",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                touchAction: "none",
+                cursor: "grab",
               }}
             >
               <span
@@ -608,7 +729,7 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
               style={{
                 padding: "0 12px 14px",
                 overflowY: "auto",
-                maxHeight: "calc(60vh - 28px)",
+                height: "calc(100% - 30px)",
               }}
             >
               <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
@@ -620,7 +741,9 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
                 ].map((tab) => (
                   <button
                     key={tab.key}
-                    onClick={() => setMobileTab(tab.key as typeof mobileTab)}
+                    onClick={() =>
+                      handleMobileTabClick(tab.key as typeof mobileTab)
+                    }
                     style={{
                       flex: 1,
                       padding: "9px 6px",
