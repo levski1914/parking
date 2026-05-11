@@ -47,7 +47,10 @@ export type SelectedItem =
       approxCapacity?: number | null;
       phone?: string | null;
     };
-
+export type UserLocation = {
+  lat: number;
+  lng: number;
+};
 type VarnaMapProps = {
   zones: Zone[];
   parkings: Parking[];
@@ -60,6 +63,7 @@ type VarnaMapProps = {
     west: number;
   }) => void;
   initialCenter: [number, number];
+  userLocation?: UserLocation | null;
   initialZoom?: number;
   focusedParkingId?: string | null;
   selectedItem?: SelectedItem | null;
@@ -83,7 +87,24 @@ function getZonesGeoJson(zones: Zone[]) {
     })),
   };
 }
+function formatShortPrice(priceText: string) {
+  const match = priceText.match(/[\d.]+/);
+  if (!match) return "--";
 
+  const value = Number(match[0]);
+
+  if (!Number.isFinite(value)) return "--";
+
+  if (priceText.toLowerCase().includes("euro") || priceText.includes("€")) {
+    return `€${value.toFixed(value % 1 === 0 ? 0 : 2)}`;
+  }
+
+  if (priceText.toLowerCase().includes("лв")) {
+    return `${value.toFixed(value % 1 === 0 ? 0 : 2)} лв`;
+  }
+
+  return `${value}`;
+}
 function getParkingsGeoJson(parkings: Parking[]) {
   return {
     type: "FeatureCollection" as const,
@@ -99,6 +120,7 @@ function getParkingsGeoJson(parkings: Parking[]) {
         parkingType: p.parkingType,
         address: p.address,
         priceText: p.priceText,
+        shortPrice: formatShortPrice(p.priceText),
         phone: p.phone || "",
         approxCapacity: p.approxCapacity ?? "",
       },
@@ -142,6 +164,29 @@ function getSelectedParkingGeoJson(
     ],
   };
 }
+
+function getUserLocationGeoJson(userLocation?: UserLocation | null) {
+  if (!userLocation) {
+    return {
+      type: "FeatureCollection" as const,
+      features: [],
+    };
+  }
+
+  return {
+    type: "FeatureCollection" as const,
+    features: [
+      {
+        type: "Feature" as const,
+        geometry: {
+          type: "Point" as const,
+          coordinates: [userLocation.lng, userLocation.lat],
+        },
+        properties: {},
+      },
+    ],
+  };
+}
 export function VarnaMap({
   zones,
   parkings,
@@ -149,7 +194,7 @@ export function VarnaMap({
   forceShowParkings = false,
   initialCenter,
   initialZoom,
-
+  userLocation,
   onBoundsChange,
   focusedParkingId,
   selectedItem,
@@ -251,7 +296,32 @@ export function VarnaMap({
           "circle-opacity": 1,
         },
       });
-
+      map.addLayer({
+        id: "parkings-price-label",
+        type: "symbol",
+        source: "parkings",
+        layout: {
+          "text-field": ["get", "shortPrice"],
+          "text-size": 12,
+          "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+          "text-offset": [0, -1.6],
+          "text-anchor": "bottom",
+          "text-allow-overlap": true,
+        },
+        paint: {
+          "text-color": "#ffffff",
+          "text-halo-color": [
+            "match",
+            ["get", "parkingType"],
+            "MUNICIPAL",
+            "#f59e0b",
+            "PRIVATE",
+            "#ef4444",
+            "#2563eb",
+          ],
+          "text-halo-width": 8,
+        },
+      });
       if (!map.getSource("selected-parking")) {
         map.addSource("selected-parking", {
           type: "geojson",
@@ -294,6 +364,40 @@ export function VarnaMap({
           },
         });
       }
+      if (!map.getSource("user-location")) {
+        map.addSource("user-location", {
+          type: "geojson",
+          data: getUserLocationGeoJson(userLocation),
+        });
+      }
+
+      if (!map.getLayer("user-location-accuracy")) {
+        map.addLayer({
+          id: "user-location-accuracy",
+          type: "circle",
+          source: "user-location",
+          paint: {
+            "circle-radius": 24,
+            "circle-color": "#2563eb",
+            "circle-opacity": 0.14,
+          },
+        });
+      }
+
+      if (!map.getLayer("user-location-dot")) {
+        map.addLayer({
+          id: "user-location-dot",
+          type: "circle",
+          source: "user-location",
+          paint: {
+            "circle-radius": 8,
+            "circle-color": "#2563eb",
+            "circle-stroke-width": 3,
+            "circle-stroke-color": "#ffffff",
+          },
+        });
+      }
+
       map.on("click", "zones-fill", (e) => {
         const f = e.features?.[0];
         if (!f) return;
@@ -329,14 +433,30 @@ export function VarnaMap({
 
       map.on("click", (e) => {
         const features = map.queryRenderedFeatures(e.point, {
-          layers: ["zones-fill", "parkings-layer"],
+          layers: ["zones-fill", "parkings-layer", "parkings-price-label"],
         });
 
         if (!features.length) {
           onSelectItem(null);
         }
       });
+      map.on("click", "parkings-price-label", (e) => {
+        const f = e.features?.[0];
+        if (!f) return;
 
+        onSelectItem({
+          kind: "parking",
+          id: String(f.properties?.id || ""),
+          name: String(f.properties?.name || ""),
+          parkingType: String(f.properties?.parkingType || ""),
+          address: String(f.properties?.address || ""),
+          priceText: String(f.properties?.priceText || ""),
+          approxCapacity: f.properties?.approxCapacity
+            ? Number(f.properties.approxCapacity)
+            : null,
+          phone: String(f.properties?.phone || ""),
+        });
+      });
       map.on("mouseenter", "zones-fill", () => {
         map.getCanvas().style.cursor = "pointer";
       });
@@ -361,7 +481,26 @@ export function VarnaMap({
       mapRef.current = null;
     };
   }, [onSelectItem, parkings, zones]);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !map.isStyleLoaded()) return;
 
+    const source = map.getSource("user-location") as
+      | mapboxgl.GeoJSONSource
+      | undefined;
+
+    if (source) {
+      source.setData(getUserLocationGeoJson(userLocation));
+    }
+
+    if (userLocation) {
+      map.flyTo({
+        center: [userLocation.lng, userLocation.lat],
+        zoom: 15,
+        duration: 900,
+      });
+    }
+  }, [userLocation]);
   // update sources + zoom behavior when data/filters change
   useEffect(() => {
     const map = mapRef.current;
@@ -380,7 +519,13 @@ export function VarnaMap({
     if (parkingsSource) {
       parkingsSource.setData(getParkingsGeoJson(parkings));
     }
-
+    if (map.getLayer("parkings-price-label")) {
+      if (forceShowParkings) {
+        map.setLayerZoomRange("parkings-price-label", 0, 24);
+      } else {
+        map.setLayerZoomRange("parkings-price-label", 14, 24);
+      }
+    }
     if (map.getLayer("parkings-layer")) {
       if (forceShowParkings) {
         map.setLayerZoomRange("parkings-layer", 0, 24);

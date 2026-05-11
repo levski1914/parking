@@ -59,8 +59,14 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
   const [touchedParking, setTouchedParking] = useState(false);
   const [radiusKm, setRadiusKm] = useState(2);
   const [mobileTab, setMobileTab] = useState<
-    "parkings" | "cheapest" | "details" | "filters"
+    "parkings" | "nearby" | "details" | "filters"
   >("parkings");
+  const [mobileSheetOpen, setMobileSheetOpen] = useState(true);
+  const [userLocation, setUserLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+  const [locationMessage, setLocationMessage] = useState("");
   const [bounds, setBounds] = useState<Bounds | null>(null);
   const [focusedParkingId, setFocusedParkingId] = useState<string | null>(null);
   const mapRef = useRef<any>(null);
@@ -83,6 +89,11 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
     });
 
     setFocusedParkingId(p.id);
+
+    if (isMobile) {
+      setMobileTab("details");
+      setMobileSheetOpen(true);
+    }
   };
 
   const [isMobile, setIsMobile] = useState(false);
@@ -97,6 +108,13 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
 
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
+  useEffect(() => {
+    if (!isMobile || !selectedItem) return;
+
+    setMobileTab("details");
+    setMobileSheetOpen(true);
+  }, [selectedItem, isMobile]);
   function getAvailabilityLabel(capacity?: number | null) {
     if (!capacity || capacity <= 20) return "Ограничени места";
     if (capacity <= 80) return "Вероятно има места";
@@ -232,6 +250,88 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
       availabilityLabel: getAvailabilityLabel(p.approxCapacity),
     }));
   }, [visibleParkings]);
+  const cheapestNearMe = useMemo(() => {
+    if (!userLocation) return [];
+
+    return filteredParkings
+      .map((p) => ({
+        ...p,
+        distance: distanceInKm(
+          userLocation.lat,
+          userLocation.lng,
+          Number(p.latitude),
+          Number(p.longitude),
+        ),
+        numericPrice: extractPrice(p.priceText),
+      }))
+      .filter((p) => p.distance <= radiusKm)
+      .sort((a, b) => a.numericPrice - b.numericPrice)
+      .slice(0, 5);
+  }, [userLocation, filteredParkings, radiusKm]);
+
+  const mobileCheapestList = userLocation ? cheapestNearMe : cheapestNearby;
+  function findMyLocation() {
+    setLocationMessage("");
+
+    if (!navigator.geolocation) {
+      setLocationMessage("Устройството не поддържа локация.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        });
+
+        setLocationMessage("Локацията е намерена.");
+        setMobileTab("nearby");
+        setMobileSheetOpen(true);
+      },
+      () => {
+        setLocationMessage("Не успяхме да вземем локацията.");
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+      },
+    );
+  }
+
+  const nearbyToMe = useMemo(() => {
+    if (!userLocation) return [];
+
+    return filteredParkings
+      .map((p) => ({
+        ...p,
+        distance: distanceInKm(
+          userLocation.lat,
+          userLocation.lng,
+          Number(p.latitude),
+          Number(p.longitude),
+        ),
+        numericPrice: extractPrice(p.priceText),
+      }))
+      .sort((a, b) => {
+        if (a.distance !== b.distance) return a.distance - b.distance;
+        return a.numericPrice - b.numericPrice;
+      })
+      .slice(0, 8);
+  }, [userLocation, filteredParkings]);
+
+  function getSelectedParkingCoords() {
+    if (!selectedItem || selectedItem.kind !== "parking") return null;
+
+    const parking = parkings.find((p) => p.id === selectedItem.id);
+    if (!parking) return null;
+
+    return {
+      lat: Number(parking.latitude),
+      lng: Number(parking.longitude),
+    };
+  }
+
   return (
     <>
       <Navbar citySlug={city.slug} />
@@ -452,149 +552,157 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
               borderTop: "1px solid #e2e8f0",
               borderTopLeftRadius: 18,
               borderTopRightRadius: 18,
-              padding: 12,
-              maxHeight: "48vh",
-              overflowY: "auto",
+              maxHeight: mobileSheetOpen ? "60vh" : 86,
+              overflow: "hidden",
               boxShadow: "0 -8px 30px rgba(15,23,42,0.12)",
+              transition: "max-height 0.25s ease",
             }}
           >
-            <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-              {[
-                { key: "parkings", label: "Паркинги" },
-                { key: "cheapest", label: "Евтини" },
-                { key: "details", label: "Детайли" },
-                { key: "filters", label: "Филтри" },
-              ].map((tab) => (
-                <button
-                  key={tab.key}
-                  onClick={() => setMobileTab(tab.key as typeof mobileTab)}
-                  style={{
-                    flex: 1,
-                    padding: "9px 6px",
-                    borderRadius: 10,
-                    border: "1px solid #cbd5e1",
-                    background: mobileTab === tab.key ? "#2563eb" : "#fff",
-                    color: mobileTab === tab.key ? "#fff" : "#0f172a",
-                    fontSize: 13,
-                    fontWeight: 600,
-                  }}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {mobileTab === "parkings" && (
-              <RightSidebar
-                visibleParkings={visibleParkings}
-                availabilityNow={availabilityNow}
-                selectedParkingId={
-                  selectedItem?.kind === "parking" ? selectedItem.id : null
-                }
-                onSelectParkingFromList={handleSelectParking}
+            <button
+              type="button"
+              onClick={() => setMobileSheetOpen((v) => !v)}
+              style={{
+                width: "100%",
+                height: 28,
+                border: "none",
+                background: "#fff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span
+                style={{
+                  width: 42,
+                  height: 4,
+                  borderRadius: 999,
+                  background: "#94a3b8",
+                  display: "block",
+                }}
               />
-            )}
+            </button>
 
-            {mobileTab === "cheapest" && (
-              <div style={{ display: "grid", gap: 10 }}>
-                <select
-                  value={radiusKm}
-                  onChange={(e) => setRadiusKm(Number(e.target.value))}
-                  style={{
-                    padding: 10,
-                    borderRadius: 10,
-                    border: "1px solid #cbd5e1",
-                  }}
-                >
-                  <option value={1}>В радиус 1 км</option>
-                  <option value={2}>В радиус 2 км</option>
-                  <option value={5}>В радиус 5 км</option>
-                </select>
-
-                {cheapestNearby.length === 0 ? (
-                  <p style={{ color: "#64748b", margin: 0 }}>
-                    Няма намерени паркинги.
-                  </p>
-                ) : (
-                  cheapestNearby.map((p) => (
-                    <div
-                      key={p.id}
-                      onClick={() => handleSelectParking(p)}
-                      style={{
-                        padding: 12,
-                        borderRadius: 12,
-                        border: "1px solid #e2e8f0",
-                      }}
-                    >
-                      <strong>{p.name}</strong>
-                      <div>{p.priceText}</div>
-                      <div style={{ color: "#64748b", fontSize: 13 }}>
-                        {p.distance.toFixed(1)} км
-                      </div>
-                    </div>
-                  ))
-                )}
+            <div
+              style={{
+                padding: "0 12px 14px",
+                overflowY: "auto",
+                maxHeight: "calc(60vh - 28px)",
+              }}
+            >
+              <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+                {[
+                  { key: "parkings", label: "Паркинги" },
+                  { key: "nearby", label: "Близки" },
+                  { key: "details", label: "Детайли" },
+                  { key: "filters", label: "Филтри" },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setMobileTab(tab.key as typeof mobileTab)}
+                    style={{
+                      flex: 1,
+                      padding: "9px 6px",
+                      borderRadius: 10,
+                      border: "1px solid #cbd5e1",
+                      background: mobileTab === tab.key ? "#2563eb" : "#fff",
+                      color: mobileTab === tab.key ? "#fff" : "#0f172a",
+                      fontSize: 13,
+                      fontWeight: 600,
+                    }}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
               </div>
-            )}
 
-            {mobileTab === "details" && (
-              <div style={{ display: "grid", gap: 10 }}>
-                {!selectedItem ? (
-                  <p style={{ color: "#64748b", margin: 0 }}>
-                    Избери зона или паркинг от картата.
-                  </p>
-                ) : (
-                  <>
-                    <div style={{ fontWeight: 700, fontSize: 18 }}>
-                      {selectedItem.name}
+              {mobileTab === "parkings" && (
+                <RightSidebar
+                  visibleParkings={visibleParkings}
+                  availabilityNow={availabilityNow}
+                  selectedParkingId={
+                    selectedItem?.kind === "parking" ? selectedItem.id : null
+                  }
+                  onSelectParkingFromList={handleSelectParking}
+                />
+              )}
+
+              {mobileTab === "nearby" && (
+                <div style={{ display: "grid", gap: 10 }}>
+                  <button
+                    onClick={findMyLocation}
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: 10,
+                      border: "1px solid #2563eb",
+                      background: "#2563eb",
+                      color: "#fff",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Намери около мен
+                  </button>
+
+                  {locationMessage && (
+                    <div style={{ fontSize: 13, color: "#64748b" }}>
+                      {locationMessage}
                     </div>
+                  )}
 
-                    <div style={{ color: "#64748b", fontSize: 14 }}>
-                      {selectedItem.priceText}
-                    </div>
-
-                    {selectedItem.kind === "parking" && (
-                      <>
-                        <ParkingReviews parkingId={selectedItem.id} />
-                        <div style={{ fontSize: 14 }}>
-                          {selectedItem.address}
+                  {!userLocation ? (
+                    <p style={{ color: "#64748b", margin: 0 }}>
+                      Натисни “Намери около мен”, за да видиш най-близките
+                      паркинги.
+                    </p>
+                  ) : nearbyToMe.length === 0 ? (
+                    <p style={{ color: "#64748b", margin: 0 }}>
+                      Няма намерени паркинги около теб.
+                    </p>
+                  ) : (
+                    nearbyToMe.map((p) => (
+                      <div
+                        key={p.id}
+                        onClick={() => handleSelectParking(p)}
+                        style={{
+                          padding: 12,
+                          borderRadius: 12,
+                          border: "1px solid #e2e8f0",
+                        }}
+                      >
+                        <strong>{p.name}</strong>
+                        <div>{p.priceText}</div>
+                        <div style={{ color: "#64748b", fontSize: 13 }}>
+                          {p.distance.toFixed(1)} км •{" "}
+                          {p.parkingType === "MUNICIPAL"
+                            ? "Общински"
+                            : "Частен"}
                         </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
 
-                        {selectedItem.phone && (
+              {mobileTab === "details" && (
+                <div style={{ display: "grid", gap: 10 }}>
+                  {!selectedItem ? (
+                    <p style={{ color: "#64748b", margin: 0 }}>
+                      Избери зона или паркинг от картата.
+                    </p>
+                  ) : (
+                    <>
+                      <div style={{ fontWeight: 700, fontSize: 18 }}>
+                        {selectedItem.name}
+                      </div>
+                      {(() => {
+                        const coords = getSelectedParkingCoords();
+
+                        if (!coords) return null;
+
+                        return (
                           <a
-                            href={`tel:${selectedItem.phone}`}
-                            style={{
-                              display: "inline-block",
-                              padding: "10px 12px",
-                              borderRadius: 10,
-                              background: "#16a34a",
-                              color: "#fff",
-                              textDecoration: "none",
-                              textAlign: "center",
-                              fontWeight: 600,
-                            }}
-                          >
-                            Обади се
-                          </a>
-                        )}
-
-                        <ReportButton
-                          targetType={
-                            selectedItem.kind === "parking" ? "PARKING" : "ZONE"
-                          }
-                          targetId={selectedItem.id}
-                        />
-                      </>
-                    )}
-
-                    {selectedItem.kind === "zone" && (
-                      <>
-                        <div>SMS номер: {selectedItem.smsNumber || "-"}</div>
-                        <div>SMS: {selectedItem.smsTemplate || "-"}</div>
-
-                        {selectedItem.smsNumber && (
-                          <a
-                            href={`sms:${selectedItem.smsNumber}`}
+                            href={`https://www.google.com/maps/dir/?api=1&destination=${coords.lat},${coords.lng}`}
+                            target="_blank"
+                            rel="noreferrer"
                             style={{
                               display: "inline-block",
                               padding: "10px 12px",
@@ -606,79 +714,143 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
                               fontWeight: 600,
                             }}
                           >
-                            Изпрати SMS
+                            Навигирай
                           </a>
-                        )}
+                        );
+                      })()}
+                      <div style={{ color: "#64748b", fontSize: 14 }}>
+                        {selectedItem.priceText}
+                      </div>
 
-                        <button
-                          style={{
-                            padding: "10px 12px",
-                            borderRadius: 10,
-                            border: "1px solid #cbd5e1",
-                            background: "#fff",
-                            fontWeight: 600,
-                          }}
-                        >
-                          Докладвай проблем
-                        </button>
-                      </>
-                    )}
-                  </>
-                )}
-              </div>
-            )}
+                      {selectedItem.kind === "parking" && (
+                        <>
+                          <ParkingReviews parkingId={selectedItem.id} />
+                          <div style={{ fontSize: 14 }}>
+                            {selectedItem.address}
+                          </div>
 
-            {mobileTab === "filters" && (
-              <div style={{ display: "grid", gap: 10 }}>
-                <button
-                  onClick={() => setShowZones((v) => !v)}
-                  style={{
-                    padding: "10px 12px",
-                    borderRadius: 999,
-                    border: "1px solid #cbd5e1",
-                    background: showZones ? "#2563eb" : "#fff",
-                    color: showZones ? "#fff" : "#0f172a",
-                    fontWeight: 600,
-                  }}
-                >
-                  {showZones ? "Скрий зони" : "Покажи зони"}
-                </button>
+                          {selectedItem.phone && (
+                            <a
+                              href={`tel:${selectedItem.phone}`}
+                              style={{
+                                display: "inline-block",
+                                padding: "10px 12px",
+                                borderRadius: 10,
+                                background: "#16a34a",
+                                color: "#fff",
+                                textDecoration: "none",
+                                textAlign: "center",
+                                fontWeight: 600,
+                              }}
+                            >
+                              Обади се
+                            </a>
+                          )}
 
-                <button
-                  onClick={() => {
-                    setTouchedParking(true);
-                    setShowMunicipal((v) => !v);
-                  }}
-                  style={{
-                    padding: "10px 12px",
-                    borderRadius: 999,
-                    border: "1px solid #cbd5e1",
-                    background: showMunicipal ? "#2563eb" : "#fff",
-                    color: showMunicipal ? "#fff" : "#0f172a",
-                    fontWeight: 600,
-                  }}
-                >
-                  {showMunicipal ? "Скрий общински" : "Покажи общински"}
-                </button>
+                          <ReportButton
+                            targetType={
+                              selectedItem.kind === "parking"
+                                ? "PARKING"
+                                : "ZONE"
+                            }
+                            targetId={selectedItem.id}
+                          />
+                        </>
+                      )}
 
-                <button
-                  onClick={() => {
-                    setTouchedParking(true);
-                    setShowPrivate((v) => !v);
-                  }}
-                  style={{
-                    padding: "10px 12px",
-                    borderRadius: 999,
-                    border: "1px solid #cbd5e1",
-                    background: showPrivate ? "#2563eb" : "#fff",
-                    color: showPrivate ? "#fff" : "#0f172a",
-                    fontWeight: 600,
-                  }}
-                >
-                  {showPrivate ? "Скрий частни" : "Покажи частни"}
-                </button>
-              </div>
-            )}
+                      {selectedItem.kind === "zone" && (
+                        <>
+                          <div>SMS номер: {selectedItem.smsNumber || "-"}</div>
+                          <div>SMS: {selectedItem.smsTemplate || "-"}</div>
+
+                          {selectedItem.smsNumber && (
+                            <a
+                              href={`sms:${selectedItem.smsNumber}`}
+                              style={{
+                                display: "inline-block",
+                                padding: "10px 12px",
+                                borderRadius: 10,
+                                background: "#2563eb",
+                                color: "#fff",
+                                textDecoration: "none",
+                                textAlign: "center",
+                                fontWeight: 600,
+                              }}
+                            >
+                              Изпрати SMS
+                            </a>
+                          )}
+
+                          <button
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 10,
+                              border: "1px solid #cbd5e1",
+                              background: "#fff",
+                              fontWeight: 600,
+                            }}
+                          >
+                            Докладвай проблем
+                          </button>
+                        </>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+
+              {mobileTab === "filters" && (
+                <div style={{ display: "grid", gap: 10 }}>
+                  <button
+                    onClick={() => setShowZones((v) => !v)}
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: 999,
+                      border: "1px solid #cbd5e1",
+                      background: showZones ? "#2563eb" : "#fff",
+                      color: showZones ? "#fff" : "#0f172a",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {showZones ? "Скрий зони" : "Покажи зони"}
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setTouchedParking(true);
+                      setShowMunicipal((v) => !v);
+                    }}
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: 999,
+                      border: "1px solid #cbd5e1",
+                      background: showMunicipal ? "#2563eb" : "#fff",
+                      color: showMunicipal ? "#fff" : "#0f172a",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {showMunicipal ? "Скрий общински" : "Покажи общински"}
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setTouchedParking(true);
+                      setShowPrivate((v) => !v);
+                    }}
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: 999,
+                      border: "1px solid #cbd5e1",
+                      background: showPrivate ? "#2563eb" : "#fff",
+                      color: showPrivate ? "#fff" : "#0f172a",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {showPrivate ? "Скрий частни" : "Покажи частни"}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </main>

@@ -28,6 +28,10 @@ type MapSectionProps = {
   focusedParkingId: string | null;
   focusedZoneId: string | null;
   onFocusedZoneHandled: () => void;
+  userLocation?: {
+    lat: number;
+    lng: number;
+  } | null;
 };
 
 export function MapSection({
@@ -37,6 +41,7 @@ export function MapSection({
   selectedItem,
   setSelectedItem,
   forceShowParkings,
+  userLocation,
   onBoundsChange,
   onFocusedParkingHandled,
   focusedParkingId,
@@ -58,6 +63,7 @@ export function MapSection({
         forceShowParkings={forceShowParkings}
         onBoundsChange={onBoundsChange}
         focusedParkingId={focusedParkingId}
+        userLocation={userLocation}
         selectedItem={selectedItem}
         initialCenter={[city.centerLng, city.centerLat]}
         initialZoom={city.defaultZoom}
