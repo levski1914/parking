@@ -88,22 +88,24 @@ function getZonesGeoJson(zones: Zone[]) {
   };
 }
 function formatShortPrice(priceText: string) {
-  const match = priceText.match(/[\d.]+/);
-  if (!match) return "--";
+  const match = priceText.match(/[\d.,]+/);
+  if (!match) return "—";
 
-  const value = Number(match[0]);
+  const value = Number(match[0].replace(",", "."));
+  if (!Number.isFinite(value)) return "—";
 
-  if (!Number.isFinite(value)) return "--";
+  const lower = priceText.toLowerCase();
 
-  if (priceText.toLowerCase().includes("euro") || priceText.includes("€")) {
-    return `€${value.toFixed(value % 1 === 0 ? 0 : 2)}`;
+  if (lower.includes("euro") || lower.includes("евро") || lower.includes("€")) {
+    return `${value.toFixed(2)}€`;
   }
 
-  if (priceText.toLowerCase().includes("лв")) {
-    return `${value.toFixed(value % 1 === 0 ? 0 : 2)} лв`;
+  if (lower.includes("лв") || lower.includes("bgn")) {
+    return `${value.toFixed(2)}лв`;
   }
 
-  return `${value}`;
+  // default за стари записи, където си писал само 2
+  return `${value.toFixed(2)}€`;
 }
 function getParkingsGeoJson(parkings: Parking[]) {
   return {

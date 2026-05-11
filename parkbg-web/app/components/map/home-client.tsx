@@ -268,7 +268,29 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
       .sort((a, b) => a.numericPrice - b.numericPrice)
       .slice(0, 5);
   }, [userLocation, filteredParkings, radiusKm]);
+  function formatDisplayPrice(priceText: string) {
+    const match = priceText.match(/[\d.,]+/);
+    if (!match) return priceText || "Няма цена";
 
+    const value = Number(match[0].replace(",", "."));
+    if (!Number.isFinite(value)) return priceText;
+
+    const lower = priceText.toLowerCase();
+
+    if (
+      lower.includes("euro") ||
+      lower.includes("евро") ||
+      lower.includes("€")
+    ) {
+      return `${value.toFixed(2)} евро / час`;
+    }
+
+    if (lower.includes("лв") || lower.includes("bgn")) {
+      return `${value.toFixed(2)} лв / час`;
+    }
+
+    return `${value.toFixed(2)} евро / час`;
+  }
   const mobileCheapestList = userLocation ? cheapestNearMe : cheapestNearby;
   function findMyLocation() {
     setLocationMessage("");
@@ -504,7 +526,7 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
                               marginTop: 6,
                             }}
                           >
-                            {p.priceText}
+                            {formatDisplayPrice(p.priceText)}
                           </div>
 
                           <div
@@ -669,7 +691,7 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
                         }}
                       >
                         <strong>{p.name}</strong>
-                        <div>{p.priceText}</div>
+                        <div>{formatDisplayPrice(p.priceText)}</div>
                         <div style={{ color: "#64748b", fontSize: 13 }}>
                           {p.distance.toFixed(1)} км •{" "}
                           {p.parkingType === "MUNICIPAL"
@@ -719,7 +741,7 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
                         );
                       })()}
                       <div style={{ color: "#64748b", fontSize: 14 }}>
-                        {selectedItem.priceText}
+                        {formatDisplayPrice(selectedItem.priceText)}
                       </div>
 
                       {selectedItem.kind === "parking" && (

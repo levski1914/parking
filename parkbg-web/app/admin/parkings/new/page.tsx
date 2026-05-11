@@ -47,6 +47,7 @@ function AddParkingMap({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const markerRef = useRef<mapboxgl.Marker | null>(null);
   const token = getToken();
+
   function createPinElement() {
     const el = document.createElement("div");
 
@@ -169,6 +170,8 @@ function AddParkingMap({
 export default function AddParkingPage() {
   const [cities, setCities] = useState<City[]>([]);
   const [message, setMessage] = useState("");
+  const [priceCurrency, setPriceCurrency] = useState<"EUR" | "BGN">("EUR");
+  const [pricePeriod, setPricePeriod] = useState<"hour" | "day">("hour");
   const { user } = useAuth();
   const [form, setForm] = useState({
     cityId: "",
@@ -279,7 +282,9 @@ export default function AddParkingPage() {
                       address: form.address,
                       latitude: Number(form.latitude),
                       longitude: Number(form.longitude),
-                      priceText: form.priceText,
+                      priceText: `${Number(form.priceText).toFixed(2)} ${
+                        priceCurrency === "EUR" ? "евро" : "лв"
+                      } / ${pricePeriod === "hour" ? "час" : "ден"}`,
                       approxCapacity: form.approxCapacity
                         ? Number(form.approxCapacity)
                         : null,
@@ -392,7 +397,10 @@ export default function AddParkingPage() {
               </div>
 
               <input
-                placeholder="Цена (пример: 2.00 лв/час)"
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="Цена"
                 value={form.priceText}
                 onChange={(e) =>
                   setForm((prev) => ({ ...prev, priceText: e.target.value }))
@@ -404,6 +412,44 @@ export default function AddParkingPage() {
                   border: "1px solid #cbd5e1",
                 }}
               />
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 10,
+                }}
+              >
+                <select
+                  value={priceCurrency}
+                  onChange={(e) =>
+                    setPriceCurrency(e.target.value as "EUR" | "BGN")
+                  }
+                  style={{
+                    padding: 12,
+                    borderRadius: 10,
+                    border: "1px solid #cbd5e1",
+                  }}
+                >
+                  <option value="EUR">Евро</option>
+                  <option value="BGN">Лева</option>
+                </select>
+
+                <select
+                  value={pricePeriod}
+                  onChange={(e) =>
+                    setPricePeriod(e.target.value as "hour" | "day")
+                  }
+                  style={{
+                    padding: 12,
+                    borderRadius: 10,
+                    border: "1px solid #cbd5e1",
+                  }}
+                >
+                  <option value="hour">на час</option>
+                  <option value="day">на ден</option>
+                </select>
+              </div>
 
               <input
                 placeholder="Приблизителни места"
