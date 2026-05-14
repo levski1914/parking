@@ -96,7 +96,7 @@ export function Navbar({ citySlug }: { citySlug?: string }) {
         {!isMobile ? (
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Link
-              href="/add-parking"
+              href="/admin/parkings/new"
               style={{
                 padding: "10px 14px",
                 borderRadius: 10,

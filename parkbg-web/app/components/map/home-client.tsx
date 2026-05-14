@@ -58,6 +58,8 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
   const [showPrivate, setShowPrivate] = useState(false);
   const [touchedParking, setTouchedParking] = useState(false);
   const [radiusKm, setRadiusKm] = useState(2);
+  const [currentZone, setCurrentZone] = useState<Zone | null>(null);
+  const notifiedZoneIdRef = useRef<string | null>(null);
   const [mobileTab, setMobileTab] = useState<
     "parkings" | "nearby" | "details" | "filters"
   >("parkings");
@@ -136,6 +138,25 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
     setMobileTab("details");
     openSheetHalf();
   }, [selectedItem, isMobile]);
+  useEffect(() => {
+    if (!userLocation) return;
+
+    const foundZone = zones.find((zone) => {
+      const polygon = zone.polygonGeoJson as any;
+
+      if (!polygon?.coordinates?.[0]) return false;
+
+      return isPointInPolygon(userLocation, polygon.coordinates[0]);
+    });
+
+    setCurrentZone(foundZone || null);
+
+    if (foundZone) {
+      sendZoneNotification(foundZone);
+    } else {
+      notifiedZoneIdRef.current = null;
+    }
+  }, [userLocation, zones]);
   function getAvailabilityLabel(capacity?: number | null) {
     if (!capacity || capacity <= 20) return "Ограничени места";
     if (capacity <= 80) return "Вероятно има места";
@@ -323,12 +344,14 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        requestNotificationPermission();
         setUserLocation({
           lat: pos.coords.latitude,
           lng: pos.coords.longitude,
         });
 
         setLocationMessage("Локацията е намерена.");
+        setFocusedParkingId(null);
         setMobileTab("nearby");
         openSheetHalf();
       },
@@ -463,6 +486,61 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
       setSheetTranslateY(max * 0.48);
     }
   }
+
+  function isPointInPolygon(
+    point: { lat: number; lng: number },
+    polygon: number[][],
+  ) {
+    const x = point.lng;
+    const y = point.lat;
+
+    let inside = false;
+
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const xi = polygon[i][0];
+      const yi = polygon[i][1];
+      const xj = polygon[j][0];
+      const yj = polygon[j][1];
+
+      const intersect =
+        yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+
+      if (intersect) inside = !inside;
+    }
+
+    return inside;
+  }
+
+  function getZoneLabel(zoneType: string) {
+    if (zoneType === "BLUE") return "Синя зона";
+    if (zoneType === "GREEN") return "Зелена зона";
+    if (zoneType === "PINK") return "Розова зона";
+    return "Зона";
+  }
+
+  async function requestNotificationPermission() {
+    if (!("Notification" in window)) return false;
+
+    if (Notification.permission === "granted") return true;
+
+    const permission = await Notification.requestPermission();
+    return permission === "granted";
+  }
+
+  function sendZoneNotification(zone: Zone) {
+    if (!("Notification" in window)) return;
+    if (Notification.permission !== "granted") return;
+    if (notifiedZoneIdRef.current === zone.id) return;
+
+    notifiedZoneIdRef.current = zone.id;
+
+    new Notification(`${getZoneLabel(zone.zoneType)}: ${zone.name}`, {
+      body: `${formatDisplayPrice(zone.priceText)} • SMS: ${
+        zone.smsNumber || "няма"
+      }`,
+      icon: "/icons/icon-192.png",
+    });
+  }
   return (
     <>
       <Navbar citySlug={city.slug} />
@@ -475,6 +553,27 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
           paddingBottom: isMobile ? 220 : 24,
         }}
       >
+        {isMobile && (
+          <button
+            onClick={findMyLocation}
+            style={{
+              position: "fixed",
+              right: 18,
+              top: 92,
+              zIndex: 70,
+              width: 44,
+              height: 44,
+              borderRadius: 14,
+              border: "1px solid #cbd5e1",
+              background: "#fff",
+              boxShadow: "0 8px 20px rgba(15,23,42,0.15)",
+              fontSize: 20,
+              fontWeight: 800,
+            }}
+          >
+            ⦿
+          </button>
+        )}
         <div style={{ maxWidth: 1680, margin: "0 auto" }}>
           <div
             style={{
@@ -520,6 +619,7 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
                 onFocusedParkingHandled={() => setFocusedParkingId(null)}
                 onBoundsChange={setBounds}
                 selectedItem={selectedItem}
+                userLocation={userLocation}
                 setSelectedItem={setSelectedItem}
                 forceShowParkings={forceShowParkings}
                 focusedParkingId={focusedParkingId}
@@ -792,7 +892,26 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
                       {locationMessage}
                     </div>
                   )}
-
+                  {currentZone && (
+                    <div
+                      style={{
+                        padding: 12,
+                        borderRadius: 12,
+                        background: "#eff6ff",
+                        border: "1px solid #bfdbfe",
+                        color: "#1e3a8a",
+                        display: "grid",
+                        gap: 4,
+                      }}
+                    >
+                      <strong>
+                        Намираш се в {getZoneLabel(currentZone.zoneType)}
+                      </strong>
+                      <div>{currentZone.name}</div>
+                      <div>{formatDisplayPrice(currentZone.priceText)}</div>
+                      <div>SMS: {currentZone.smsNumber || "-"}</div>
+                    </div>
+                  )}
                   {!userLocation ? (
                     <p style={{ color: "#64748b", margin: 0 }}>
                       Натисни “Намери около мен”, за да видиш най-близките
@@ -863,6 +982,10 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
                           </a>
                         );
                       })()}
+                      <ReportButton
+                        targetType="PARKING"
+                        targetId={selectedItem.id}
+                      />
                       <div style={{ color: "#64748b", fontSize: 14 }}>
                         {formatDisplayPrice(selectedItem.priceText)}
                       </div>
@@ -891,15 +1014,6 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
                               Обади се
                             </a>
                           )}
-
-                          <ReportButton
-                            targetType={
-                              selectedItem.kind === "parking"
-                                ? "PARKING"
-                                : "ZONE"
-                            }
-                            targetId={selectedItem.id}
-                          />
                         </>
                       )}
 
@@ -926,17 +1040,10 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
                             </a>
                           )}
 
-                          <button
-                            style={{
-                              padding: "10px 12px",
-                              borderRadius: 10,
-                              border: "1px solid #cbd5e1",
-                              background: "#fff",
-                              fontWeight: 600,
-                            }}
-                          >
-                            Докладвай проблем
-                          </button>
+                          <ReportButton
+                            targetType="ZONE"
+                            targetId={selectedItem.id}
+                          />
                         </>
                       )}
                     </>
