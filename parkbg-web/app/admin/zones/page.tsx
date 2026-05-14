@@ -282,6 +282,14 @@ export default function AdminZonesPage() {
       }),
     });
     if (!res.ok) {
+      const error = await res.json().catch(() => null);
+      console.log("SAVE ZONE ERROR:", res.status, error);
+      setMessage(
+        error?.message || "Възникна проблем при записването на зоната.",
+      );
+      return;
+    }
+    if (!res.ok) {
       setMessage("Възникна проблем при записването на зоната.");
       return;
     }
