@@ -49,7 +49,7 @@ export default function RootLayout({
       <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       <PendingApprovalBanner />
       <body className="min-h-full flex flex-col">
-        <ServiceWorkerRegister />
+        {/* <ServiceWorkerRegister /> */}
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
