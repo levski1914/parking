@@ -17,16 +17,26 @@ export async function getMe() {
 
   if (!token) return null;
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  if (!res.ok) {
-    localStorage.removeItem("token");
+    if (res.status === 401 || res.status === 403) {
+      removeToken();
+      return null;
+    }
+
+    if (!res.ok) {
+      console.error("getMe failed:", res.status);
+      return null;
+    }
+
+    return res.json();
+  } catch (err) {
+    console.error("getMe network error:", err);
     return null;
   }
-
-  return res.json();
 }
