@@ -33,6 +33,7 @@ export default function AdminZonesPage() {
   const [cities, setCities] = useState<City[]>([]);
   const [cityId, setCityId] = useState("");
   const [name, setName] = useState("");
+  const token = getToken();
   const [zoneType, setZoneType] = useState("BLUE");
   const [priceText, setPriceText] = useState("");
   const [smsNumber, setSmsNumber] = useState("");

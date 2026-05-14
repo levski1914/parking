@@ -16,7 +16,29 @@ export default function EditZonePage() {
 
   const [points, setPoints] = useState<[number, number][]>([]);
   const [zone, setZone] = useState<any>(null);
+  useEffect(() => {
+    if (!containerRef.current || mapRef.current) return;
 
+    const map = new mapboxgl.Map({
+      container: containerRef.current,
+      style: "mapbox://styles/mapbox/streets-v12",
+      center: [27.9147, 43.2141],
+      zoom: 13,
+    });
+
+    map.addControl(new mapboxgl.NavigationControl(), "top-right");
+
+    map.on("click", (e) => {
+      setPoints((prev) => [...prev, [e.lngLat.lng, e.lngLat.lat]]);
+    });
+
+    mapRef.current = map;
+
+    return () => {
+      map.remove();
+      mapRef.current = null;
+    };
+  }, []);
   // load zone
   useEffect(() => {
     async function loadZone() {
@@ -41,6 +63,15 @@ export default function EditZonePage() {
 
       const coords = z.polygonGeoJson.coordinates[0];
       setPoints(coords.slice(0, -1));
+      const firstPoint = coords[0];
+
+      if (mapRef.current && firstPoint) {
+        mapRef.current.flyTo({
+          center: firstPoint,
+          zoom: 14,
+          duration: 800,
+        });
+      }
     }
 
     loadZone();
