@@ -14,11 +14,9 @@ export default function AdminLayout({
 
       <main style={{ minHeight: "100vh", background: "#f1f5f9", padding: 24 }}>
         <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-          <AuthProvider>
-            <AdminGuard allowMunicipality allowPrivate>
-              {children}
-            </AdminGuard>
-          </AuthProvider>
+          <AdminGuard allowMunicipality allowPrivate>
+            {children}
+          </AdminGuard>
         </div>
       </main>
     </>

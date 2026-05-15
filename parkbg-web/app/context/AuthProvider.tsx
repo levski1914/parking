@@ -37,14 +37,15 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
   async function refreshUser() {
     setLoading(true);
 
-    const me = await getMe();
-
-    setUser(me);
-    setLoading(false);
+    try {
+      const me = await getMe();
+      setUser(me);
+    } finally {
+      setLoading(false);
+    }
   }
   async function logout() {
     await logoutRequest();

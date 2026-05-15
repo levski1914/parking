@@ -9,11 +9,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'https://parking-j0e2m98zl-lamborghinigd-4806s-projects.vercel.app',
-      'https://parking-three-iota.vercel.app',
-    ],
+    origin: ['http://localhost:3000', 'https://parking-three-iota.vercel.app'],
     credentials: true,
   });
 
