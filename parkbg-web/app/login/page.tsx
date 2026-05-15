@@ -1,9 +1,10 @@
 "use client";
 
 import { Navbar } from "@/app/components/layout/navbar";
-import { setToken } from "@/app/lib/auth";
+// import { setToken } from "@/app/lib/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { notifyAuthChanged } from "../lib/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,20 +22,18 @@ export default function LoginPage() {
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(form),
     });
-
     if (!res.ok) {
       setMessage("Грешен имейл, парола или акаунтът още не е одобрен.");
       return;
     }
-
-    const data = await res.json();
-
-    setToken(data.access_token);
+    await res.json();
+    notifyAuthChanged();
     router.push("/admin");
   }
 

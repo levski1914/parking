@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { useParams, useRouter } from "next/navigation";
 import { AdminGuard } from "@/app/components/auth/AdminGuard";
-import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
+// import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
 
 export default function EditZonePage() {
@@ -42,13 +42,14 @@ export default function EditZonePage() {
   // load zone
   useEffect(() => {
     async function loadZone() {
-      const token = getToken();
+      // const token = getToken();
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/zones/${id}`,
         {
+          credentials: "include",
           headers: {
-            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         },
       );
@@ -124,7 +125,7 @@ export default function EditZonePage() {
     }
   }, [points]);
   async function save() {
-    const token = getToken();
+    // const token = getToken();
 
     const polygon = {
       type: "Polygon",
@@ -133,9 +134,9 @@ export default function EditZonePage() {
 
     await fetch(`${process.env.NEXT_PUBLIC_API_URL}/zones/${id}`, {
       method: "PATCH",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         polygonGeoJson: polygon,

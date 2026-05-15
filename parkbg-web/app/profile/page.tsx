@@ -15,18 +15,26 @@ export default function ProfilePage() {
   const [me, setMe] = useState<Me | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token) return;
-
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      credentials: "include",
       cache: "no-store",
     })
-      .then((r) => r.json())
-      .then(setMe);
+      .then(async (r) => {
+        if (!r.ok) {
+          setMe(null);
+          return null;
+        }
+
+        return r.json();
+      })
+      .then((data) => {
+        if (data) {
+          setMe(data);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching profile:", err);
+      });
   }, []);
 
   return (
@@ -71,9 +79,11 @@ export default function ProfilePage() {
                   <div>
                     <strong>Роля:</strong> {me.role}
                   </div>
+
                   <div>
                     <strong>Тип:</strong> {me.ownerType || "-"}
                   </div>
+
                   <div>
                     <strong>Статус:</strong>{" "}
                     {me.role === "OWNER"

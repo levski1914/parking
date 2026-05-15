@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { getToken } from "@/app/lib/auth";
+// import { getToken } from "@/app/lib/auth";
 import { useAuth } from "@/app/context/AuthProvider";
 
 type Report = {
@@ -45,13 +45,13 @@ export default function AdminReportsPage() {
   const [message, setMessage] = useState("");
 
   async function apiPatch(url: string, body?: any) {
-    const token = getToken();
+    // const token = getToken();
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${url}`, {
       method: "PATCH",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: body ? JSON.stringify(body) : undefined,
     });
@@ -68,12 +68,11 @@ export default function AdminReportsPage() {
   }
 
   async function loadReports() {
-    const token = getToken();
+    // const token = getToken();
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reports`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      credentials: "include",
+      headers: {},
     });
 
     const data = await res.json().catch(() => []);
@@ -156,7 +155,7 @@ export default function AdminReportsPage() {
     return { background: "#fee2e2", color: "#991b1b" };
   }
   async function markVisibleReportsAsSeen(reportsToMark: Report[]) {
-    const token = getToken();
+    // const token = getToken();
 
     const unseenReports = reportsToMark.filter((r) => {
       if (user?.role === "ADMIN") return !r.adminSeenAt;
@@ -168,8 +167,9 @@ export default function AdminReportsPage() {
       unseenReports.map((r) =>
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/reports/${r.id}/seen`, {
           method: "PATCH",
+          credentials: "include",
           headers: {
-            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         }),
       ),

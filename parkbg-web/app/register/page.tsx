@@ -1,9 +1,10 @@
 "use client";
 
 import { Navbar } from "@/app/components/layout/navbar";
-import { setToken } from "@/app/lib/auth";
+// import { setToken } from "@/app/lib/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { notifyAuthChanged } from "../lib/auth";
 
 type City = {
   id: string;
@@ -57,26 +58,23 @@ export default function RegisterPage() {
       `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
       {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       },
     );
-
     if (!res.ok) {
       setMessage("Проблем при регистрацията.");
       return;
     }
 
-    const data = await res.json();
-
     if (isOwner) {
       setMessage("Заявката е изпратена. Акаунтът чака одобрение от админ.");
       return;
     }
-
-    setToken(data.access_token);
+    notifyAuthChanged();
     router.push("/");
   }
 

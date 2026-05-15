@@ -117,14 +117,12 @@ export class AuthService {
     };
   }
   generateToken(user: any) {
-    return {
-      access_token: this.jwtService.sign({
-        sub: user.id,
-        role: user.role,
-        ownerType: user.ownerType,
-        organizationId: user.organizationId,
-        isVerified: user.isVerified,
-      }),
-    };
+    return this.jwtService.sign({
+      sub: user.id,
+      role: user.role,
+      ownerType: user.ownerType,
+      organizationId: user.organizationId,
+      isVerified: user.isVerified,
+    });
   }
 }

@@ -5,7 +5,7 @@ import mapboxgl from "mapbox-gl";
 import { Navbar } from "@/app/components/layout/navbar";
 import { useRef } from "react";
 import { useAuth } from "@/app/context/AuthProvider";
-import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
+// import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
 
 type City = {
@@ -46,7 +46,7 @@ function AddParkingMap({
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const markerRef = useRef<mapboxgl.Marker | null>(null);
-  const token = getToken();
+  // const token = getToken();
 
   function createPinElement() {
     const el = document.createElement("div");
@@ -266,14 +266,14 @@ export default function AddParkingPage() {
                   setMessage("Моля, избери локация от картата.");
                   return;
                 }
-                const token = getToken();
+                // const token = getToken();
                 const res = await fetch(
                   `${process.env.NEXT_PUBLIC_API_URL}/parkings`,
                   {
                     method: "POST",
+                    credentials: "include",
                     headers: {
                       "Content-Type": "application/json",
-                      Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify({
                       cityId: form.cityId,

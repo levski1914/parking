@@ -1,6 +1,6 @@
 "use client";
 
-import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
+// import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
 import { useAuth } from "@/app/context/AuthProvider";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -15,14 +15,12 @@ export default function EditParkingPage() {
 
   useEffect(() => {
     async function loadParking() {
-      const token = getToken();
+      // const token = getToken();
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/parkings/${id}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          credentials: "include",
         },
       );
 
@@ -52,15 +50,13 @@ export default function EditParkingPage() {
   async function save() {
     setMessage("");
 
-    const token = getToken();
-
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/parkings/${id}`,
       {
         method: "PATCH",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           ...form,

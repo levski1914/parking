@@ -7,7 +7,7 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { getMe, getToken, removeToken } from "@/app/lib/auth";
+import { getMe, logoutRequest } from "@/app/lib/auth";
 
 type User = {
   id: string;
@@ -41,27 +41,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function refreshUser() {
     setLoading(true);
 
-    const token = getToken();
-
-    if (!token) {
-      setUser(null);
-      setLoading(false);
-      return;
-    }
-
     const me = await getMe();
-
-    if (!me) {
-      setUser(null);
-      setLoading(false);
-      return;
-    }
 
     setUser(me);
     setLoading(false);
   }
-  function logout() {
-    removeToken();
+  async function logout() {
+    await logoutRequest();
     setUser(null);
     window.location.href = "/";
   }

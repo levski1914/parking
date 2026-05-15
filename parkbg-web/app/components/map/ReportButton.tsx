@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { getToken } from "@/app/lib/auth";
+// import { getToken } from "@/app/lib/auth";
 
 type Props = {
   targetType: "PARKING" | "ZONE";
@@ -26,24 +26,21 @@ export function ReportButton({ targetType, targetId }: Props) {
   async function submitReport() {
     setMessage("");
 
-    const token = getToken();
+    // const token = getToken();
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/reports${token ? "/auth" : ""}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({
-          targetType,
-          targetId,
-          reason,
-          note,
-        }),
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reports`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({
+        targetType,
+        targetId,
+        reason,
+        note,
+      }),
+    });
 
     const data = await res.json().catch(() => null);
 

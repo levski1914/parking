@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
+// import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
 import { AdminGuard } from "@/app/components/auth/AdminGuard";
 type PendingParking = {
   id: string;
@@ -23,15 +23,11 @@ export default function AdminParkingsPage() {
   async function loadPending() {
     setLoading(true);
 
-    const token = getToken();
-
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/parkings/pending`,
       {
         cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: "include",
       },
     );
 
@@ -51,15 +47,11 @@ export default function AdminParkingsPage() {
   async function updateStatus(id: string, status: "APPROVED" | "REJECTED") {
     setMessage("");
 
-    const token = getToken();
-
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/parkings/${id}/status/${status}`,
       {
         method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: "include",
       },
     );
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
+// import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
 import Link from "next/link";
 import { useEffect, useState } from "react";
 type Parking = {
@@ -19,13 +19,11 @@ export default function AdminAllParkingsPage() {
   const [message, setMessage] = useState("");
 
   async function loadParkings() {
-    const token = getToken();
+    // const token = getToken();
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/parkings/all`, {
       cache: "no-store",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      credentials: "include",
     });
 
     const data = await res.json();
@@ -49,15 +47,13 @@ export default function AdminAllParkingsPage() {
     const ok = confirm("Сигурен ли си, че искаш да изтриеш този паркинг?");
     if (!ok) return;
 
-    const token = getToken();
+    // const token = getToken();
 
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/parkings/${id}`,
       {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: "include",
       },
     );
 

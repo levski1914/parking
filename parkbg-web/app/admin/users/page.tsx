@@ -28,8 +28,9 @@ export default function AdminUsersPage() {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/users/pending-owners`,
       {
+        credentials: "include",
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         cache: "no-store",
       },
@@ -51,8 +52,9 @@ export default function AdminUsersPage() {
       `${process.env.NEXT_PUBLIC_API_URL}/users/${id}/approve`,
       {
         method: "PATCH",
+        credentials: "include",
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       },
     );
@@ -71,8 +73,9 @@ export default function AdminUsersPage() {
       `${process.env.NEXT_PUBLIC_API_URL}/users/${id}/reject`,
       {
         method: "DELETE",
+        credentials: "include",
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       },
     );

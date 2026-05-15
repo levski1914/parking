@@ -4,7 +4,7 @@ import { AdminGuard } from "@/app/components/auth/AdminGuard";
 import { AdminNavbar } from "@/app/components/layout/admin-navbar";
 import mapboxgl from "mapbox-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
+// import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
 
 type City = {
@@ -33,7 +33,7 @@ export default function AdminZonesPage() {
   const [cities, setCities] = useState<City[]>([]);
   const [cityId, setCityId] = useState("");
   const [name, setName] = useState("");
-  const token = getToken();
+  // const token = getToken();
   const [zoneType, setZoneType] = useState("BLUE");
   const [priceText, setPriceText] = useState("");
   const [smsNumber, setSmsNumber] = useState("");
@@ -263,13 +263,13 @@ export default function AdminZonesPage() {
       coordinates: [[...points, points[0]]],
     };
 
-    const token = getToken();
+    // const token = getToken();
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/zones`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         cityId,

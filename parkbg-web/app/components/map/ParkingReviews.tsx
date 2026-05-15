@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getToken } from "@/app/lib/auth";
+//import { getToken } from "@/app/lib/auth";
 
 type Review = {
   id: string;
@@ -41,18 +41,11 @@ export function ParkingReviews({ parkingId }: { parkingId: string }) {
   async function submitReview() {
     setMessage("");
 
-    const token = getToken();
-
-    if (!token) {
-      setMessage("Влез в профила си, за да оставиш отзив.");
-      return;
-    }
-
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         parkingId,
@@ -62,6 +55,11 @@ export function ParkingReviews({ parkingId }: { parkingId: string }) {
     });
 
     const data = await res.json().catch(() => null);
+
+    if (res.status === 401 || res.status === 403) {
+      setMessage("Влез в профила си, за да оставиш отзив.");
+      return;
+    }
 
     if (!res.ok) {
       setMessage(data?.message || "Проблем при изпращането.");
