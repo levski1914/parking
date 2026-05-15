@@ -19,17 +19,16 @@ import { OwnerTypeGuard } from './guards/owner-type.guard';
 import { RegisterDto } from './dto/register.dto';
 
 function cookieOptions() {
-  const isProd = process.env.NODE_ENV === 'production';
+  const isLocal = process.env.NODE_ENV !== 'production';
 
   return {
     httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? ('none' as const) : ('lax' as const),
+    secure: !isLocal,
+    sameSite: isLocal ? ('lax' as const) : ('none' as const),
     maxAge: 1000 * 60 * 60 * 24 * 7,
     path: '/',
   };
 }
-
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
