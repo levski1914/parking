@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/app/context/AuthProvider";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 type Props = {
   children: React.ReactNode;
@@ -20,32 +20,47 @@ export function AdminGuard({
   const { user, loading } = useAuth();
   const router = useRouter();
 
-  const allowed =
-    user?.role === "ADMIN" ||
-    (allowMunicipality &&
-      user?.role === "OWNER" &&
+  const allowed = useMemo(() => {
+    if (!user) return false;
+
+    if (allowAdmin && user.role === "ADMIN") return true;
+
+    if (
+      allowMunicipality &&
+      user.role === "OWNER" &&
       user.ownerType === "MUNICIPALITY" &&
-      user.isVerified) ||
-    (allowPrivate &&
-      user?.role === "OWNER" &&
+      user.isVerified
+    ) {
+      return true;
+    }
+
+    if (
+      allowPrivate &&
+      user.role === "OWNER" &&
       user.ownerType === "PRIVATE" &&
-      user.isVerified);
+      user.isVerified
+    ) {
+      return true;
+    }
+
+    return false;
+  }, [user, allowAdmin, allowMunicipality, allowPrivate]);
 
   useEffect(() => {
     if (loading) return;
 
     if (!user) {
-      router.push("/login");
+      router.replace("/login");
       return;
     }
 
     if (user.role === "OWNER" && !user.isVerified) {
-      router.push("/profile");
+      router.replace("/profile");
       return;
     }
 
     if (!allowed) {
-      router.push("/");
+      router.replace("/");
     }
   }, [user, loading, allowed, router]);
 

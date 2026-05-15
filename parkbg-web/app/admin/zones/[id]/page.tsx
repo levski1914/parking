@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { useParams, useRouter } from "next/navigation";
-import { AdminGuard } from "@/app/components/auth/AdminGuard";
+
 // import { getToken } from "@/app/lib/auth"; // смени пътя ако е друг
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
 
@@ -146,22 +146,20 @@ export default function EditZonePage() {
     router.push("/admin/zones-list");
   }
   return (
-    <AdminGuard allowMunicipality>
-      <div style={{ display: "grid", gridTemplateColumns: "300px 1fr" }}>
-        <div style={{ padding: 20 }}>
-          <h2>Редакция на зона</h2>
+    <div style={{ display: "grid", gridTemplateColumns: "300px 1fr" }}>
+      <div style={{ padding: 20 }}>
+        <h2>Редакция на зона</h2>
 
-          <button onClick={() => setPoints((p) => p.slice(0, -1))}>
-            Махни последна точка
-          </button>
+        <button onClick={() => setPoints((p) => p.slice(0, -1))}>
+          Махни последна точка
+        </button>
 
-          <button onClick={() => setPoints([])}>Изчисти</button>
+        <button onClick={() => setPoints([])}>Изчисти</button>
 
-          <button onClick={save}>Запази</button>
-        </div>
-
-        <div ref={containerRef} style={{ height: "100vh" }} />
+        <button onClick={save}>Запази</button>
       </div>
-    </AdminGuard>
+
+      <div ref={containerRef} style={{ height: "100vh" }} />
+    </div>
   );
 }

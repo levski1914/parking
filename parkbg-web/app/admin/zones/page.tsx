@@ -1,6 +1,5 @@
 "use client";
 
-import { AdminGuard } from "@/app/components/auth/AdminGuard";
 import { AdminNavbar } from "@/app/components/layout/admin-navbar";
 import mapboxgl from "mapbox-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -312,206 +311,204 @@ export default function AdminZonesPage() {
   }
 
   return (
-    <AdminGuard allowMunicipality>
-      <main style={{ minHeight: "100vh", background: "#f1f5f9", padding: 24 }}>
+    <main style={{ minHeight: "100vh", background: "#f1f5f9", padding: 24 }}>
+      <div
+        style={{
+          maxWidth: 1440,
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: "380px 1fr",
+          gap: 16,
+        }}
+      >
         <div
           style={{
-            maxWidth: 1440,
-            margin: "0 auto",
-            display: "grid",
-            gridTemplateColumns: "380px 1fr",
-            gap: 16,
+            background: "#fff",
+            border: "1px solid #e2e8f0",
+            borderRadius: 16,
+            padding: 24,
           }}
         >
-          <div
-            style={{
-              background: "#fff",
-              border: "1px solid #e2e8f0",
-              borderRadius: 16,
-              padding: 24,
-            }}
-          >
-            <h1 style={{ marginTop: 0 }}>Добави зона</h1>
-            <p style={{ color: "#64748b", lineHeight: 1.5 }}>
-              Избери град, попълни данните и цъкай по картата, за да очертаеш
-              зоната.
-            </p>
+          <h1 style={{ marginTop: 0 }}>Добави зона</h1>
+          <p style={{ color: "#64748b", lineHeight: 1.5 }}>
+            Избери град, попълни данните и цъкай по картата, за да очертаеш
+            зоната.
+          </p>
 
-            <div style={{ display: "grid", gap: 14 }}>
-              <select
-                value={cityId}
-                onChange={(e) => setCityId(e.target.value)}
+          <div style={{ display: "grid", gap: 14 }}>
+            <select
+              value={cityId}
+              onChange={(e) => setCityId(e.target.value)}
+              style={{
+                padding: 12,
+                borderRadius: 10,
+                border: "1px solid #cbd5e1",
+              }}
+            >
+              <option value="">Избери град</option>
+              {cities.map((city) => (
+                <option key={city.id} value={city.id}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
+
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Име на зоната"
+              style={{
+                padding: 12,
+                borderRadius: 10,
+                border: "1px solid #cbd5e1",
+              }}
+            />
+
+            <select
+              value={zoneType}
+              onChange={(e) => setZoneType(e.target.value)}
+              style={{
+                padding: 12,
+                borderRadius: 10,
+                border: "1px solid #cbd5e1",
+              }}
+            >
+              <option value="BLUE">Синя зона</option>
+              <option value="GREEN">Зелена зона</option>
+              <option value="PINK">Розова зона</option>
+              <option value="OTHER">Друга зона</option>
+            </select>
+
+            <input
+              value={priceText}
+              onChange={(e) => setPriceText(e.target.value)}
+              placeholder="Цена (пример: 2.00 лв/час)"
+              style={{
+                padding: 12,
+                borderRadius: 10,
+                border: "1px solid #cbd5e1",
+              }}
+            />
+
+            <input
+              value={smsNumber}
+              onChange={(e) => setSmsNumber(e.target.value)}
+              placeholder="SMS номер"
+              style={{
+                padding: 12,
+                borderRadius: 10,
+                border: "1px solid #cbd5e1",
+              }}
+            />
+
+            <input
+              value={smsTemplate}
+              onChange={(e) => setSmsTemplate(e.target.value)}
+              placeholder="Примерен SMS"
+              style={{
+                padding: 12,
+                borderRadius: 10,
+                border: "1px solid #cbd5e1",
+              }}
+            />
+
+            <div
+              style={{
+                padding: 12,
+                borderRadius: 10,
+                border: "1px solid #cbd5e1",
+                background: "#f8fafc",
+                color: "#475569",
+                fontSize: 14,
+                lineHeight: 1.5,
+              }}
+            >
+              {points.length === 0
+                ? "Започни да очертаваш зоната, като цъкаш по картата."
+                : `Добавени точки: ${points.length}. При 3 или повече точки ще виждаш preview.`}
+            </div>
+
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button
+                type="button"
+                onClick={undoLastPoint}
                 style={{
-                  padding: 12,
+                  padding: "10px 14px",
                   borderRadius: 10,
                   border: "1px solid #cbd5e1",
+                  background: "#fff",
+                  cursor: "pointer",
                 }}
               >
-                <option value="">Избери град</option>
-                {cities.map((city) => (
-                  <option key={city.id} value={city.id}>
-                    {city.name}
-                  </option>
-                ))}
-              </select>
+                Премахни последната точка
+              </button>
 
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Име на зоната"
+              <button
+                type="button"
+                onClick={clearPoints}
                 style={{
-                  padding: 12,
+                  padding: "10px 14px",
                   borderRadius: 10,
                   border: "1px solid #cbd5e1",
-                }}
-              />
-
-              <select
-                value={zoneType}
-                onChange={(e) => setZoneType(e.target.value)}
-                style={{
-                  padding: 12,
-                  borderRadius: 10,
-                  border: "1px solid #cbd5e1",
+                  background: "#fff",
+                  cursor: "pointer",
                 }}
               >
-                <option value="BLUE">Синя зона</option>
-                <option value="GREEN">Зелена зона</option>
-                <option value="PINK">Розова зона</option>
-                <option value="OTHER">Друга зона</option>
-              </select>
+                Изчисти
+              </button>
+            </div>
 
-              <input
-                value={priceText}
-                onChange={(e) => setPriceText(e.target.value)}
-                placeholder="Цена (пример: 2.00 лв/час)"
-                style={{
-                  padding: 12,
-                  borderRadius: 10,
-                  border: "1px solid #cbd5e1",
-                }}
-              />
+            <button
+              type="button"
+              onClick={saveZone}
+              style={{
+                padding: "12px 16px",
+                borderRadius: 10,
+                border: "1px solid #2563eb",
+                background: "#2563eb",
+                color: "#fff",
+                cursor: "pointer",
+                fontWeight: 600,
+              }}
+            >
+              Запази зона
+            </button>
 
-              <input
-                value={smsNumber}
-                onChange={(e) => setSmsNumber(e.target.value)}
-                placeholder="SMS номер"
-                style={{
-                  padding: 12,
-                  borderRadius: 10,
-                  border: "1px solid #cbd5e1",
-                }}
-              />
-
-              <input
-                value={smsTemplate}
-                onChange={(e) => setSmsTemplate(e.target.value)}
-                placeholder="Примерен SMS"
-                style={{
-                  padding: 12,
-                  borderRadius: 10,
-                  border: "1px solid #cbd5e1",
-                }}
-              />
-
+            {message && (
               <div
                 style={{
                   padding: 12,
                   borderRadius: 10,
-                  border: "1px solid #cbd5e1",
-                  background: "#f8fafc",
-                  color: "#475569",
-                  fontSize: 14,
-                  lineHeight: 1.5,
+                  background: "#eff6ff",
+                  border: "1px solid #bfdbfe",
+                  color: "#1d4ed8",
                 }}
               >
-                {points.length === 0
-                  ? "Започни да очертаваш зоната, като цъкаш по картата."
-                  : `Добавени точки: ${points.length}. При 3 или повече точки ще виждаш preview.`}
+                {message}
               </div>
+            )}
+          </div>
+        </div>
 
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  onClick={undoLastPoint}
-                  style={{
-                    padding: "10px 14px",
-                    borderRadius: 10,
-                    border: "1px solid #cbd5e1",
-                    background: "#fff",
-                    cursor: "pointer",
-                  }}
-                >
-                  Премахни последната точка
-                </button>
-
-                <button
-                  type="button"
-                  onClick={clearPoints}
-                  style={{
-                    padding: "10px 14px",
-                    borderRadius: 10,
-                    border: "1px solid #cbd5e1",
-                    background: "#fff",
-                    cursor: "pointer",
-                  }}
-                >
-                  Изчисти
-                </button>
-              </div>
-
-              <button
-                type="button"
-                onClick={saveZone}
-                style={{
-                  padding: "12px 16px",
-                  borderRadius: 10,
-                  border: "1px solid #2563eb",
-                  background: "#2563eb",
-                  color: "#fff",
-                  cursor: "pointer",
-                  fontWeight: 600,
-                }}
-              >
-                Запази зона
-              </button>
-
-              {message && (
-                <div
-                  style={{
-                    padding: 12,
-                    borderRadius: 10,
-                    background: "#eff6ff",
-                    border: "1px solid #bfdbfe",
-                    color: "#1d4ed8",
-                  }}
-                >
-                  {message}
-                </div>
-              )}
-            </div>
+        <div
+          style={{
+            background: "#fff",
+            border: "1px solid #e2e8f0",
+            borderRadius: 16,
+            padding: 16,
+          }}
+        >
+          <div style={{ marginBottom: 12, color: "#64748b", fontSize: 14 }}>
+            Цъкай на картата, за да добавяш точки. Preview-то се запълва
+            автоматично.
           </div>
 
           <div
-            style={{
-              background: "#fff",
-              border: "1px solid #e2e8f0",
-              borderRadius: 16,
-              padding: 16,
-            }}
-          >
-            <div style={{ marginBottom: 12, color: "#64748b", fontSize: 14 }}>
-              Цъкай на картата, за да добавяш точки. Preview-то се запълва
-              автоматично.
-            </div>
-
-            <div
-              ref={containerRef}
-              style={{ height: 760, borderRadius: 12, overflow: "hidden" }}
-            />
-          </div>
+            ref={containerRef}
+            style={{ height: 760, borderRadius: 12, overflow: "hidden" }}
+          />
         </div>
-      </main>
-    </AdminGuard>
+      </div>
+    </main>
   );
 }

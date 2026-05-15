@@ -4,11 +4,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { PendingApprovalBanner } from "@/app/components/auth/pending-approval-banner";
 import { AuthProvider } from "./context/AuthProvider";
-import { AdminGuard } from "./components/auth/AdminGuard";
-// import { ServiceWorkerRegister } from "./page";
-// import { useEffect } from "react";
+
 import { ServiceWorkerRegister } from "./components/pwa/ServiceWorkerRegister";
-// import { AdminGuard } from "./components/auth/AdminGuard";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
