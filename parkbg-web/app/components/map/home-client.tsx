@@ -72,7 +72,10 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
   const dragStartYRef = useRef<number | null>(null);
   const dragStartTranslateRef = useRef(0);
   const sheetRef = useRef<HTMLDivElement | null>(null);
-
+  const lastZoneNotificationRef = useRef<{
+    zoneId: string;
+    time: number;
+  } | null>(null);
   const { userLocation, locationMessage, startTrackingLocation } =
     useLocation();
   const [bounds, setBounds] = useState<Bounds | null>(null);
@@ -103,16 +106,7 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
       openSheetHalf();
     }
   };
-  useEffect(() => {
-    const saved = localStorage.getItem("parkbg_user_location");
 
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        parsed;
-      } catch {}
-    }
-  }, []);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -146,7 +140,10 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
     openSheetHalf();
   }, [selectedItem, isMobile]);
   useEffect(() => {
-    if (!userLocation) return;
+    if (!userLocation) {
+      setCurrentZone(null);
+      return;
+    }
 
     const foundZone = zones.find((zone) => {
       const polygon = zone.polygonGeoJson as any;
@@ -160,8 +157,6 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
 
     if (foundZone) {
       sendZoneNotification(foundZone);
-    } else {
-      notifiedZoneIdRef.current = null;
     }
   }, [userLocation, zones]);
   function getAvailabilityLabel(capacity?: number | null) {
@@ -340,62 +335,7 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
 
     return `${value.toFixed(2)} евро / час`;
   }
-  const mobileCheapestList = userLocation ? cheapestNearMe : cheapestNearby;
-  function findMyLocation() {
-    if (!navigator.geolocation) {
-      ("Устройството не поддържа локация.");
-      return;
-    }
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const location = {
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        };
-
-        requestNotificationPermission();
-        location;
-        localStorage.setItem("parkbg_user_location", JSON.stringify(location));
-
-        setFocusedParkingId(null);
-        setMobileTab("nearby");
-        openSheetHalf();
-      },
-      () => {
-        ("Не успяхме да вземем локацията.");
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 30000,
-      },
-    );
-  }
-
-  useEffect(() => {
-    if (!navigator.geolocation) return;
-
-    const watchId = navigator.geolocation.watchPosition(
-      (pos) => {
-        const location = {
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        };
-
-        location;
-        localStorage.setItem("parkbg_user_location", JSON.stringify(location));
-      },
-      () => {},
-      {
-        enableHighAccuracy: true,
-        maximumAge: 30000,
-        timeout: 10000,
-      },
-    );
-
-    return () => navigator.geolocation.clearWatch(watchId);
-  }, []);
   const nearbyToMe = useMemo(() => {
     if (!userLocation) return [];
 
@@ -548,7 +488,14 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
     if (zoneType === "PINK") return "Розова зона";
     return "Зона";
   }
+  function handleFindMyLocationClick() {
+    requestNotificationPermission();
+    startTrackingLocation();
 
+    setFocusedParkingId(null);
+    setMobileTab("nearby");
+    openSheetHalf();
+  }
   async function requestNotificationPermission() {
     if (!("Notification" in window)) return false;
 
@@ -561,9 +508,20 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
   function sendZoneNotification(zone: Zone) {
     if (!("Notification" in window)) return;
     if (Notification.permission !== "granted") return;
-    if (notifiedZoneIdRef.current === zone.id) return;
 
-    notifiedZoneIdRef.current = zone.id;
+    const now = Date.now();
+    const last = lastZoneNotificationRef.current;
+
+    const cooldownMs = 10 * 60 * 1000; // 10 минути
+
+    if (last?.zoneId === zone.id && now - last.time < cooldownMs) {
+      return;
+    }
+
+    lastZoneNotificationRef.current = {
+      zoneId: zone.id,
+      time: now,
+    };
 
     new Notification(`${getZoneLabel(zone.zoneType)}: ${zone.name}`, {
       body: `${formatDisplayPrice(zone.priceText)} • SMS: ${
@@ -586,7 +544,7 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
       >
         {isMobile && (
           <button
-            onClick={findMyLocation}
+            onClick={handleFindMyLocationClick}
             style={{
               position: "fixed",
               right: 18,
@@ -905,7 +863,7 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
               {mobileTab === "nearby" && (
                 <div style={{ display: "grid", gap: 10 }}>
                   <button
-                    onClick={findMyLocation}
+                    onClick={handleFindMyLocationClick}
                     style={{
                       padding: "10px 12px",
                       borderRadius: 10,
