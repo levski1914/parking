@@ -370,42 +370,6 @@ export function VarnaMap({
       if (!map.getSource("user-location")) {
         map.addSource("user-location", {
           type: "geojson",
-          data: {
-            type: "FeatureCollection",
-            features: [],
-          },
-        });
-      }
-
-      if (!map.getLayer("user-location-pulse")) {
-        map.addLayer({
-          id: "user-location-pulse",
-          type: "circle",
-          source: "user-location",
-          paint: {
-            "circle-radius": 18,
-            "circle-color": "#2563eb",
-            "circle-opacity": 0.18,
-          },
-        });
-      }
-
-      if (!map.getLayer("user-location-dot")) {
-        map.addLayer({
-          id: "user-location-dot",
-          type: "circle",
-          source: "user-location",
-          paint: {
-            "circle-radius": 8,
-            "circle-color": "#2563eb",
-            "circle-stroke-width": 3,
-            "circle-stroke-color": "#ffffff",
-          },
-        });
-      }
-      if (!map.getSource("user-location")) {
-        map.addSource("user-location", {
-          type: "geojson",
           data: getUserLocationGeoJson(userLocation),
         });
       }
@@ -422,7 +386,6 @@ export function VarnaMap({
           },
         });
       }
-
       if (!map.getLayer("user-location-dot")) {
         map.addLayer({
           id: "user-location-dot",
@@ -436,7 +399,6 @@ export function VarnaMap({
           },
         });
       }
-
       map.on("click", "zones-fill", (e) => {
         const f = e.features?.[0];
         if (!f) return;
@@ -519,7 +481,7 @@ export function VarnaMap({
       map.remove();
       mapRef.current = null;
     };
-  }, [onSelectItem, parkings, zones]);
+  }, []);
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !map.isStyleLoaded()) return;
@@ -588,39 +550,6 @@ export function VarnaMap({
     }
   }, [parkings, selectedItem]);
 
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map || !map.isStyleLoaded()) return;
-
-    const source = map.getSource("user-location") as
-      | mapboxgl.GeoJSONSource
-      | undefined;
-
-    if (!source) return;
-
-    if (!userLocation) {
-      source.setData({
-        type: "FeatureCollection",
-        features: [],
-      });
-
-      return;
-    }
-
-    source.setData({
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          geometry: {
-            type: "Point",
-            coordinates: [userLocation.lng, userLocation.lat],
-          },
-          properties: {},
-        },
-      ],
-    });
-  }, [userLocation]);
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !focusedParkingId) return;

@@ -6,6 +6,7 @@ import { PendingApprovalBanner } from "@/app/components/auth/pending-approval-ba
 import { AuthProvider } from "./context/AuthProvider";
 
 import { ServiceWorkerRegister } from "./components/pwa/ServiceWorkerRegister";
+import { LocationProvider } from "./context/LocationProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,7 +49,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         {/* <ServiceWorkerRegister /> */}
         <PendingApprovalBanner />
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <LocationProvider>{children}</LocationProvider>
+        </AuthProvider>
       </body>
     </html>
   );

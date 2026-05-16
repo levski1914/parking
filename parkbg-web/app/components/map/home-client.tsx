@@ -8,6 +8,7 @@ import { Navbar } from "../layout/navbar";
 import { RightSidebar } from "@/app/components/map/right-sidebar";
 import { ParkingReviews } from "@/app/components/map/ParkingReviews";
 import { ReportButton } from "@/app/components/map/ReportButton";
+import { useLocation } from "@/app/context/LocationProvider";
 type HomeClientProps = {
   city: {
     id: string;
@@ -72,11 +73,8 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
   const dragStartTranslateRef = useRef(0);
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
-  const [userLocation, setUserLocation] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
-  const [locationMessage, setLocationMessage] = useState("");
+  const { userLocation, locationMessage, startTrackingLocation } =
+    useLocation();
   const [bounds, setBounds] = useState<Bounds | null>(null);
   const [focusedParkingId, setFocusedParkingId] = useState<string | null>(null);
   const mapRef = useRef<any>(null);
@@ -105,7 +103,16 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
       openSheetHalf();
     }
   };
+  useEffect(() => {
+    const saved = localStorage.getItem("parkbg_user_location");
 
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        parsed;
+      } catch {}
+    }
+  }, []);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -335,36 +342,60 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
   }
   const mobileCheapestList = userLocation ? cheapestNearMe : cheapestNearby;
   function findMyLocation() {
-    setLocationMessage("");
-
     if (!navigator.geolocation) {
-      setLocationMessage("Устройството не поддържа локация.");
+      ("Устройството не поддържа локация.");
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        requestNotificationPermission();
-        setUserLocation({
+        const location = {
           lat: pos.coords.latitude,
           lng: pos.coords.longitude,
-        });
+        };
 
-        setLocationMessage("Локацията е намерена.");
+        requestNotificationPermission();
+        location;
+        localStorage.setItem("parkbg_user_location", JSON.stringify(location));
+
         setFocusedParkingId(null);
         setMobileTab("nearby");
         openSheetHalf();
       },
       () => {
-        setLocationMessage("Не успяхме да вземем локацията.");
+        ("Не успяхме да вземем локацията.");
       },
       {
         enableHighAccuracy: true,
         timeout: 10000,
+        maximumAge: 30000,
       },
     );
   }
 
+  useEffect(() => {
+    if (!navigator.geolocation) return;
+
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const location = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        };
+
+        location;
+        localStorage.setItem("parkbg_user_location", JSON.stringify(location));
+      },
+      () => {},
+      {
+        enableHighAccuracy: true,
+        maximumAge: 30000,
+        timeout: 10000,
+      },
+    );
+
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, []);
   const nearbyToMe = useMemo(() => {
     if (!userLocation) return [];
 
