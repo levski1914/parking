@@ -73,7 +73,7 @@ export function LocationProvider({ children }: { children: ReactNode }) {
         setLocationMessage("Не успяхме да вземем локацията.");
       },
       {
-        enableHighAccuracy: true,
+        enableHighAccuracy: false,
         maximumAge: 30000,
         timeout: 10000,
       },

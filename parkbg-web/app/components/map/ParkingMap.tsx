@@ -204,7 +204,7 @@ export function VarnaMap({
 }: VarnaMapProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
-
+  const hasCenteredOnUserRef = useRef(false);
   // create map once
   useEffect(() => {
     if (!ref.current || mapRef.current) return;
@@ -494,7 +494,9 @@ export function VarnaMap({
       source.setData(getUserLocationGeoJson(userLocation));
     }
 
-    if (userLocation) {
+    if (userLocation && !hasCenteredOnUserRef.current) {
+      hasCenteredOnUserRef.current = true;
+
       map.flyTo({
         center: [userLocation.lng, userLocation.lat],
         zoom: 15,
