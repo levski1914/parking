@@ -32,7 +32,7 @@ const LocationContext = createContext<LocationContextType>({
 });
 
 const STORAGE_KEY = "parkbg_user_location";
-const TRACKING_KEY = "parkbg_location_tracking_enabled";
+// const TRACKING_KEY = "parkbg_location_tracking_enabled";
 
 export function LocationProvider({ children }: { children: ReactNode }) {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
@@ -54,7 +54,7 @@ export function LocationProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    localStorage.setItem(TRACKING_KEY, "true");
+    // localStorage.setItem(TRACKING_KEY, "true");
     setIsTracking(true);
 
     if (watchIdRef.current !== null) return;
@@ -81,7 +81,7 @@ export function LocationProvider({ children }: { children: ReactNode }) {
   }
 
   function stopTrackingLocation() {
-    localStorage.removeItem(TRACKING_KEY);
+    // localStorage.removeItem(TRACKING_KEY);
     setIsTracking(false);
 
     if (watchIdRef.current !== null) {
@@ -96,18 +96,17 @@ export function LocationProvider({ children }: { children: ReactNode }) {
     if (saved) {
       try {
         setUserLocation(JSON.parse(saved));
-      } catch {}
+      } catch {
+        localStorage.removeItem(STORAGE_KEY);
+      }
     }
 
-    const shouldTrack = localStorage.getItem(TRACKING_KEY) === "true";
-
-    if (shouldTrack) {
-      startTrackingLocation();
-    }
+    setIsTracking(false);
 
     return () => {
       if (watchIdRef.current !== null) {
         navigator.geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
       }
     };
   }, []);
