@@ -54,9 +54,12 @@ export function LocationProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    // localStorage.setItem(TRACKING_KEY, "true");
     setIsTracking(true);
 
-    navigator.geolocation.getCurrentPosition(
+    if (watchIdRef.current !== null) return;
+
+    watchIdRef.current = navigator.geolocation.watchPosition(
       (pos) => {
         saveLocation({
           lat: pos.coords.latitude,
@@ -64,18 +67,15 @@ export function LocationProvider({ children }: { children: ReactNode }) {
           accuracy: pos.coords.accuracy,
         });
 
-        setLocationMessage("Локацията е намерена.");
-        setIsTracking(false);
+        setLocationMessage("Локацията е активна.");
       },
-      (error) => {
-        console.error("LOCATION ERROR:", error);
+      () => {
         setLocationMessage("Не успяхме да вземем локацията.");
-        setIsTracking(false);
       },
       {
         enableHighAccuracy: false,
-        maximumAge: 60000,
-        timeout: 15000,
+        maximumAge: 30000,
+        timeout: 10000,
       },
     );
   }

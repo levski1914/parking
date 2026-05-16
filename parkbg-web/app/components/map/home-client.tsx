@@ -506,29 +506,24 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
   }
 
   function sendZoneNotification(zone: Zone) {
-    if (!("Notification" in window)) return;
-    if (Notification.permission !== "granted") return;
-
-    const now = Date.now();
-    const last = lastZoneNotificationRef.current;
-
-    const cooldownMs = 10 * 60 * 1000; // 10 минути
-
-    if (last?.zoneId === zone.id && now - last.time < cooldownMs) {
-      return;
-    }
-
-    lastZoneNotificationRef.current = {
-      zoneId: zone.id,
-      time: now,
-    };
-
-    new Notification(`${getZoneLabel(zone.zoneType)}: ${zone.name}`, {
-      body: `${formatDisplayPrice(zone.priceText)} • SMS: ${
-        zone.smsNumber || "няма"
-      }`,
-      icon: "/icons/icon-192.png",
-    });
+    // if (!("Notification" in window)) return;
+    // if (Notification.permission !== "granted") return;
+    // const now = Date.now();
+    // const last = lastZoneNotificationRef.current;
+    // const cooldownMs = 10 * 60 * 1000; // 10 минути
+    // if (last?.zoneId === zone.id && now - last.time < cooldownMs) {
+    //   return;
+    // }
+    // lastZoneNotificationRef.current = {
+    //   zoneId: zone.id,
+    //   time: now,
+    // };
+    // new Notification(`${getZoneLabel(zone.zoneType)}: ${zone.name}`, {
+    //   body: `${formatDisplayPrice(zone.priceText)} • SMS: ${
+    //     zone.smsNumber || "няма"
+    //   }`,
+    //   icon: "/icons/icon-192.png",
+    // });
   }
   return (
     <>
