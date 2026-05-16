@@ -47,7 +47,7 @@ export default function RootLayout({
       <meta name="apple-mobile-web-app-title" content="ParkBG" />
       <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       <body className="min-h-full flex flex-col">
-        {/* <ServiceWorkerRegister /> */}
+        <ServiceWorkerRegister />
         <PendingApprovalBanner />
         <AuthProvider>
           <LocationProvider>{children}</LocationProvider>
