@@ -570,6 +570,25 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
           </button>
         )}
         <div style={{ maxWidth: 1680, margin: "0 auto" }}>
+          <button
+            onClick={handleFindMyLocationClick}
+            style={{
+              position: "fixed",
+              right: 18,
+              top: 92,
+              zIndex: 70,
+              width: 44,
+              height: 44,
+              borderRadius: 14,
+              border: "1px solid #cbd5e1",
+              background: "#fff",
+              boxShadow: "0 8px 20px rgba(15,23,42,0.15)",
+              fontSize: 20,
+              fontWeight: 800,
+            }}
+          >
+            ⦿
+          </button>
           <div
             style={{
               display: "grid",
