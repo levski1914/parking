@@ -79,13 +79,19 @@ export function ZoneTrackingProvider({ children }: { children: ReactNode }) {
       return isPointInPolygon(userLocation, polygon.coordinates[0]);
     });
 
-    if (!foundZone) return;
+    if (!foundZone) {
+      lastNotificationRef.current = null;
+      return;
+    }
 
     const now = Date.now();
     const last = lastNotificationRef.current;
     const cooldownMs = 10 * 60 * 1000;
 
-    if (last?.zoneId === foundZone.id && now - last.time < cooldownMs) return;
+    const shouldNotify =
+      !last || last.zoneId !== foundZone.id || now - last.time >= cooldownMs;
+
+    if (!shouldNotify) return;
 
     lastNotificationRef.current = {
       zoneId: foundZone.id,
