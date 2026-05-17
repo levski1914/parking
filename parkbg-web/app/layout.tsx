@@ -7,6 +7,8 @@ import { AuthProvider } from "./context/AuthProvider";
 
 import { ServiceWorkerRegister } from "./components/pwa/ServiceWorkerRegister";
 import { LocationProvider } from "./context/LocationProvider";
+import { NotificationProvider } from "./context/NotificationsProvider";
+import { ZoneTrackingProvider } from "./context/ZonesProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,7 +52,11 @@ export default function RootLayout({
         <ServiceWorkerRegister />
         <PendingApprovalBanner />
         <AuthProvider>
-          <LocationProvider>{children}</LocationProvider>
+          <LocationProvider>
+            <NotificationProvider>
+              <ZoneTrackingProvider>{children}</ZoneTrackingProvider>
+            </NotificationProvider>
+          </LocationProvider>
         </AuthProvider>
       </body>
     </html>

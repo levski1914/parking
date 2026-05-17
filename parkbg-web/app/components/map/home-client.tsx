@@ -9,6 +9,7 @@ import { RightSidebar } from "@/app/components/map/right-sidebar";
 import { ParkingReviews } from "@/app/components/map/ParkingReviews";
 import { ReportButton } from "@/app/components/map/ReportButton";
 import { useLocation } from "@/app/context/LocationProvider";
+import { useNotifications } from "@/app/context/NotificationsProvider";
 type HomeClientProps = {
   city: {
     id: string;
@@ -84,6 +85,8 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
   const [cheapestNearby, setCheapestNearby] = useState<CheapestParking[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [focusedZoneId, setFocusedZoneId] = useState<string | null>(null);
+  const { notificationsEnabled, requestPermission, sendLocalNotification } =
+    useNotifications();
   const filteredZones = useMemo(() => {
     return showZones ? zones : [];
   }, [showZones, zones]);
@@ -125,7 +128,7 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
     function updateSheetSize() {
       const h = window.innerHeight * SHEET_MAX_VH;
       setSheetHeight(h);
-      setSheetTranslateY(h * 0.42);
+      setSheetTranslateY(h - SHEET_MIN_VISIBLE);
     }
 
     updateSheetSize();
@@ -418,11 +421,15 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
     setSheetTranslateY(nearest);
   }
 
+  function collapseSheet() {
+    const max = getMaxTranslate();
+    if (!max) return;
+    setSheetTranslateY(max);
+  }
+
   function openSheetHalf() {
     const max = getMaxTranslate();
-
     if (!max) return;
-
     setSheetTranslateY(max * 0.48);
   }
   function isSheetCollapsed() {
@@ -496,18 +503,17 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
     setMobileTab("nearby");
     openSheetHalf();
   }
-  async function requestNotificationPermission() {
-    if (!("Notification" in window)) return false;
+  // async function requestNotificationPermission() {
+  //   if (!("Notification" in window)) return false;
 
-    if (Notification.permission === "granted") return true;
+  //   if (Notification.permission === "granted") return true;
 
-    const permission = await Notification.requestPermission();
-    return permission === "granted";
-  }
+  //   const permission = await Notification.requestPermission();
+  //   return permission === "granted";
+  // }
 
-  function sendZoneNotification(zone: Zone) {
-    if (!("Notification" in window)) return;
-    if (Notification.permission !== "granted") return;
+  async function sendZoneNotification(zone: Zone) {
+    if (!notificationsEnabled) return;
 
     const now = Date.now();
     const last = lastZoneNotificationRef.current;
@@ -515,20 +521,20 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
 
     if (last?.zoneId === zone.id && now - last.time < cooldownMs) return;
 
-    lastZoneNotificationRef.current = { zoneId: zone.id, time: now };
+    lastZoneNotificationRef.current = {
+      zoneId: zone.id,
+      time: now,
+    };
 
-    setTimeout(() => {
-      try {
-        new Notification(`${getZoneLabel(zone.zoneType)}: ${zone.name}`, {
-          body: `${formatDisplayPrice(zone.priceText)} • SMS: ${
-            zone.smsNumber || "няма"
-          }`,
-          icon: "/icons/icon-192.png",
-        });
-      } catch (err) {
-        console.error("Notification error:", err);
-      }
-    }, 500);
+    await sendLocalNotification(
+      `${getZoneLabel(zone.zoneType)}: ${zone.name}`,
+      {
+        body: `${formatDisplayPrice(zone.priceText)} • SMS: ${
+          zone.smsNumber || "няма"
+        }`,
+        tag: `zone-${zone.id}`,
+      },
+    );
   }
   return (
     <>
@@ -608,6 +614,9 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
                 onFocusedParkingHandled={() => setFocusedParkingId(null)}
                 onBoundsChange={setBounds}
                 selectedItem={selectedItem}
+                onMapClick={() => {
+                  if (isMobile) collapseSheet();
+                }}
                 userLocation={userLocation}
                 setSelectedItem={setSelectedItem}
                 forceShowParkings={forceShowParkings}
@@ -818,7 +827,10 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
               style={{
                 padding: "0 12px 14px",
                 overflowY: "auto",
-                height: "calc(100% - 30px)",
+                height: "calc(100% - 32px)",
+                WebkitOverflowScrolling: "touch",
+                overscrollBehavior: "contain",
+                touchAction: "pan-y",
               }}
             >
               <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
@@ -875,9 +887,21 @@ export function HomeClient({ city, zones, parkings }: HomeClientProps) {
                   >
                     Намери около мен
                   </button>
-                  <button onClick={requestNotificationPermission}>
-                    Включи известия за зони
-                  </button>
+                  {!notificationsEnabled && (
+                    <button
+                      onClick={requestPermission}
+                      style={{
+                        padding: "10px 12px",
+                        borderRadius: 10,
+                        border: "1px solid #cbd5e1",
+                        background: "#fff",
+                        color: "#0f172a",
+                        fontWeight: 700,
+                      }}
+                    >
+                      Включи известия за зони
+                    </button>
+                  )}
                   {locationMessage && (
                     <div style={{ fontSize: 13, color: "#64748b" }}>
                       {locationMessage}

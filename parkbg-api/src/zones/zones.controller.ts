@@ -52,4 +52,9 @@ export class ZonesController {
   async deleteZone(@Param('id') id: string, @Req() req: any) {
     return this.zonesService.deleteZoneForUser(id, req.user);
   }
+
+  @Get('public/all')
+  async getPublicZones() {
+    return this.zonesService.findAllPublic();
+  }
 }

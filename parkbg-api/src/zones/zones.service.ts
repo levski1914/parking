@@ -160,4 +160,22 @@ export class ZonesService {
       where: { id },
     });
   }
+
+  async findAllPublic() {
+    return this.prisma.client.zone.findMany({
+      where: {
+        isActive: true,
+      },
+      select: {
+        id: true,
+        name: true,
+        zoneType: true,
+        priceText: true,
+        smsNumber: true,
+        smsTemplate: true,
+        polygonGeoJson: true,
+        cityId: true,
+      },
+    });
+  }
 }

@@ -63,6 +63,7 @@ type VarnaMapProps = {
     west: number;
   }) => void;
   initialCenter: [number, number];
+  onMapClick?: () => void;
   userLocation?: UserLocation | null;
   initialZoom?: number;
   focusedParkingId?: string | null;
@@ -198,6 +199,7 @@ export function VarnaMap({
   initialZoom,
   userLocation,
   onBoundsChange,
+  onMapClick,
   focusedParkingId,
   selectedItem,
   onFocusedParkingHandled,
@@ -217,7 +219,16 @@ export function VarnaMap({
     });
 
     map.addControl(new mapboxgl.NavigationControl(), "top-right");
+    map.on("click", (e) => {
+      const features = map.queryRenderedFeatures(e.point, {
+        layers: ["zones-fill", "parkings-layer", "parkings-price-label"],
+      });
 
+      if (!features.length) {
+        onSelectItem(null);
+        onMapClick?.();
+      }
+    });
     map.on("load", () => {
       const emitBounds = () => {
         if (!onBoundsChange) return;
